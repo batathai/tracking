@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Status - ระบบติดตามสถานะ e-Tax</title>
+    <style>
+        body { font-family: 'Sarabun', sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        h2 { color: #1a73e8; margin-bottom: 25px; }
+        .input-group { margin-bottom: 20px; }
+        input { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; box-sizing: border-box; font-size: 16px; outline: none; transition: border-color 0.3s; }
+        input:focus { border-color: #1a73e8; }
+        button { width: 100%; background-color: #1a73e8; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; transition: background 0.3s; }
+        button:hover { background-color: #1557b0; }
+        #result { margin-top: 25px; min-height: 60px; padding: 15px; border-radius: 8px; display: none; }
+        .success { display: block !important; background-color: #e8f0fe; color: #1967d2; border: 1px solid #d2e3fc; line-height: 1.6; }
+        .error { display: block !important; background-color: #fce8e6; color: #c5221f; border: 1px solid #fad2cf; }
+        .loading { font-size: 14px; color: #666; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>ติดตามสถานะแจ้งปัญหา</h2>
+    <div class="input-group">
+        <input type="text" id="ticketInput" placeholder="กรอกเลข Ticket (เช่น TK-0001)">
+    </div>
+    <button onclick="checkStatus()">ตรวจสอบสถานะ</button>
+    <div id="result"></div>
+</div>
+
+<script>
+    // ดึง URL หลักจากลิงก์ที่คุณส่งมาเพื่อให้ระบบทำงานได้ถูกต้อง
+    const API_URL = "https://script.google.com/macros/s/AKfycbzLYyET_1nSFGAZr-PHXQMMupaT8w6dvleZaFip3_6zI03qkQ1ePCvDiLdd0ZD8ULY1/exec";
+
+    async function checkStatus() {
+        const ticketInput = document.getElementById('ticketInput');
+        const resultDiv = document.getElementById('result');
+        const ticketNo = ticketInput.value.trim();
+
+        if (!ticketNo) {
+            showResult("กรุณากรอกหมายเลข Ticket", "error");
+            return;
+        }
+
+        // แสดงสถานะกำลังโหลด
+        resultDiv.innerHTML = '<span class="loading">กำลังค้นหาข้อมูล...</span>';
+        resultDiv.className = "";
+        resultDiv.style.display = "block";
+
+        try {
+            // เรียกข้อมูลจาก Google Sheets API
+            const response = await fetch(`${API_URL}?ticket=${encodeURIComponent(ticketNo)}`);
+            const data = await response.json();
+
+            if (data.success) {
+                showResult(`<strong>เลข Ticket:</strong> ${ticketNo}<br><strong>สถานะปัจจุบัน:</strong> ${data.status}`, "success");
+            } else {
+                showResult("ไม่พบหมายเลข Ticket นี้ในระบบ", "error");
+            }
+        } catch (error) {
+            console.error(error);
+            showResult("เกิดข้อผิดพลาดในการเชื่อมต่อ หรือ API ยังไม่ได้ Deploy แบบ Anyone", "error");
+        }
+    }
+
+    function showResult(text, type) {
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = text;
+        resultDiv.className = type;
+    }
+
+    // รองรับการกดปุ่ม Enter ในช่องกรอกข้อมูล
+    document.getElementById('ticketInput').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            checkStatus();
+        }
+    });
+</script>
+
+</body>
+</html>
