@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>แจ้งปัญหา e-Tax — Bata Thailand</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --red: #CC0000; --red-dark: #a30000; --white: #ffffff; --off-white: #fafaf9; --gray-100: #f4f4f3; --gray-200: #e8e8e6; --gray-400: #b0afa9; --gray-600: #6b6a65; --gray-900: #1c1b18; --radius-sm: 6px; --radius-lg: 16px; --green: #1a7f3c; --green-light: #f0faf4; }
+    body { font-family: 'Sarabun', sans-serif; background: var(--off-white); color: var(--gray-900); min-height: 100vh; }
+    header { background: var(--white); border-bottom: 1px solid var(--gray-200); padding: 0 2rem; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+    .logo-wrap { display: flex; align-items: center; gap: 10px; }
+    .logo-b { background: var(--red); color: var(--white); width: 36px; height: 36px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 700; }
+    .logo-name { font-size: 14px; font-weight: 600; line-height: 1.1; }
+    .logo-dept { font-size: 11px; color: var(--gray-400); }
+    .back-link { font-size: 13px; color: var(--gray-600); text-decoration: none; display: flex; align-items: center; gap: 5px; }
+    .back-link:hover { color: var(--red); }
+    .hero { background: var(--red); padding: 2.5rem 2rem; text-align: center; }
+    .hero h1 { font-size: 22px; font-weight: 700; color: var(--white); margin-bottom: 4px; }
+    .hero p { font-size: 13px; color: rgba(255,255,255,0.75); }
+    .container { max-width: 680px; margin: 2rem auto; padding: 0 1.25rem 4rem; }
+    .form-card { background: var(--white); border-radius: var(--radius-lg); border: 1px solid var(--gray-200); padding: 2rem; margin-bottom: 1rem; }
+    .section-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--gray-200); }
+    .field { margin-bottom: 1.25rem; }
+    label { display: block; font-size: 13.5px; font-weight: 500; color: var(--gray-900); margin-bottom: 6px; }
+    label .en { font-weight: 400; color: var(--gray-400); font-size: 12px; margin-left: 4px; }
+    label .req { color: var(--red); }
+    input, select, textarea { width: 100%; padding: 10px 14px; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); font-family: 'Sarabun', sans-serif; font-size: 14px; color: var(--gray-900); outline: none; appearance: none; }
+    input:focus, select:focus, textarea:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(204,0,0,0.08); }
+    textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+    select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23b0afa9' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .file-upload { border: 1.5px dashed var(--gray-200); border-radius: var(--radius-sm); padding: 1.25rem; text-align: center; cursor: pointer; display: block; }
+    .file-upload:hover { border-color: var(--red); background: #fff8f8; }
+    .file-upload input { display: none; }
+    .file-upload-icon { font-size: 24px; margin-bottom: 6px; }
+    .file-upload-text { font-size: 13px; color: var(--gray-600); }
+    .file-upload-hint { font-size: 11.5px; color: var(--gray-400); margin-top: 3px; }
+    .file-name { font-size: 12.5px; color: var(--green); margin-top: 6px; font-weight: 500; }
+    .consent-box { background: var(--gray-100); border-radius: var(--radius-sm); padding: 1rem; font-size: 13px; color: var(--gray-600); line-height: 1.6; margin-bottom: 1rem; }
+    .checkbox-row { display: flex; align-items: flex-start; gap: 10px; }
+    .checkbox-row input[type="checkbox"] { width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0; accent-color: var(--red); cursor: pointer; }
+    .checkbox-row label { font-size: 13.5px; font-weight: 400; cursor: pointer; }
+    .submit-btn { width: 100%; background: var(--red); color: var(--white); border: none; border-radius: var(--radius-sm); padding: 14px; font-family: 'Sarabun', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 1.5rem; }
+    .submit-btn:hover { background: var(--red-dark); }
+    .submit-btn:disabled { background: var(--gray-400); cursor: not-allowed; }
+    .submit-btn svg { width: 16px; height: 16px; stroke: white; fill: none; stroke-width: 2; }
+    .spinner { width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #success-screen { display: none; background: var(--white); border-radius: var(--radius-lg); border: 1px solid var(--gray-200); padding: 3rem 2rem; text-align: center; }
+    .success-icon { width: 64px; height: 64px; background: var(--green-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; }
+    .success-icon svg { width: 30px; height: 30px; stroke: var(--green); fill: none; stroke-width: 2.2; }
+    .success-title { font-size: 20px; font-weight: 700; color: var(--gray-900); margin-bottom: 6px; }
+    .success-sub { font-size: 14px; color: var(--gray-600); margin-bottom: 2rem; }
+    .ticket-box { background: var(--gray-100); border-left: 4px solid var(--red); border-radius: var(--radius-sm); padding: 1.25rem 1.5rem; margin: 0 auto 2rem; max-width: 320px; }
+    .ticket-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-400); margin-bottom: 6px; }
+    .ticket-number { font-size: 32px; font-weight: 700; color: var(--red); letter-spacing: 0.05em; }
+    .ticket-hint { font-size: 12.5px; color: var(--gray-600); margin-top: 6px; }
+    .success-actions { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+    .btn-outline, .btn-red { padding: 10px 20px; border-radius: var(--radius-sm); font-family: 'Sarabun', sans-serif; font-size: 13.5px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-outline { border: 1.5px solid var(--gray-200); color: var(--gray-600); background: var(--white); }
+    .btn-outline:hover { border-color: var(--red); color: var(--red); }
+    .btn-red { background: var(--red); border: none; color: var(--white); font-weight: 600; }
+    .btn-red:hover { background: var(--red-dark); }
+    footer { border-top: 1px solid var(--gray-200); background: var(--white); padding: 1.25rem 2rem; text-align: center; font-size: 12px; color: var(--gray-400); }
+    @media (max-width: 520px) { .two-col { grid-template-columns: 1fr; } .form-card { padding: 1.25rem; } }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-wrap"><div class="logo-b">B</div><div><div class="logo-name">Bata Thailand</div><div class="logo-dept">e-Tax Support</div></div></div>
+  <a class="back-link" href="index.html">← กลับหน้าหลัก</a>
+</header>
+
+<div class="hero">
+  <h1>แจ้งปัญหา e-Tax</h1>
+  <p>กรอกข้อมูลให้ครบถ้วน ระบบจะออกเลข Ticket ให้ทันที</p>
+</div>
+
+<div class="container">
+  <form id="etax-form" onsubmit="submitForm(event)">
+    <div id="form-section">
+      <div class="form-card">
+        <div class="section-title">ข้อมูลติดต่อ / Contact Information</div>
+        <div class="field">
+          <label>ชื่อ-นามสกุล <span class="en">Full Name</span><span class="req">*</span></label>
+          <input type="text" id="fullname" required placeholder="กรอกชื่อ-นามสกุล" />
+        </div>
+        <div class="two-col">
+          <div class="field">
+            <label>เบอร์โทรศัพท์ <span class="en">Phone</span><span class="req">*</span></label>
+            <input type="tel" id="phone" required placeholder="0812345678" />
+          </div>
+          <div class="field">
+            <label>อีเมลรับ e-Tax <span class="en">Email</span><span class="req">*</span></label>
+            <input type="email" id="email" required placeholder="example@email.com" />
+          </div>
+        </div>
+        <div class="field">
+          <label>เลขประจำตัวผู้เสียภาษี <span class="en">Tax ID (Optional)</span></label>
+          <input type="text" id="taxid" placeholder="ถ้ามี / If available" />
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="section-title">ข้อมูลการซื้อ / Purchase Information</div>
+        <div class="two-col">
+          <div class="field">
+            <label>วันที่ซื้อสินค้า <span class="en">Purchase Date</span><span class="req">*</span></label>
+            <input type="date" id="purchase-date" required />
+          </div>
+          <div class="field">
+            <label>สาขาที่ซื้อ <span class="en">Branch</span><span class="req">*</span></label>
+            <input type="text" id="branch" required placeholder="ชื่อสาขา / Branch name" />
+          </div>
+        </div>
+        <div class="field">
+          <label>เลขใบเสร็จ <span class="en">Receipt / Order No.</span><span class="req">*</span></label>
+          <input type="text" id="receipt" required placeholder="เลขใบเสร็จ หรือ เลข Order" />
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="section-title">รายละเอียดปัญหา / Issue Detail</div>
+        <div class="field">
+          <label>ประเภทปัญหา <span class="en">Issue Type</span><span class="req">*</span></label>
+          <select id="issue-type" required>
+            <option value="">-- เลือกประเภทปัญหา / Select issue type --</option>
+            <option value="ไม่ได้รับใบกำกับภาษีอิเล็กทรอนิกส์">ไม่ได้รับใบกำกับภาษีอิเล็กทรอนิกส์ (Did Not Receive e-Tax)</option>
+            <option value="ข้อมูลในใบกำกับภาษีไม่ถูกต้อง">ข้อมูลในใบกำกับภาษีไม่ถูกต้อง (Incorrect Information)</option>
+            <option value="ต้องการแก้ไขอีเมล">ต้องการแก้ไขอีเมล (Change Email)</option>
+            <option value="อื่นๆ">อื่นๆ (Other)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>รายละเอียดเพิ่มเติม <span class="en">Additional Detail</span></label>
+          <textarea id="detail" placeholder="อธิบายปัญหาเพิ่มเติม (ถ้ามี)"></textarea>
+        </div>
+        <div class="field">
+          <label>แนบใบเสร็จ / หลักฐาน <span class="en">Upload Receipt</span></label>
+          <label class="file-upload" for="file-upload">
+            <input type="file" id="file-upload" accept="image/*,.pdf" onchange="handleFile(this)" />
+            <div class="file-upload-icon">📎</div>
+            <div class="file-upload-text">คลิกเพื่อแนบไฟล์</div>
+            <div class="file-upload-hint">รองรับ JPG, PNG, PDF (ไม่เกิน 5MB)</div>
+            <div class="file-name" id="file-name"></div>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="section-title">การยินยอม / Consent</div>
+        <div class="consent-box">
+          ข้าพเจ้ายินยอมให้ Bata Thailand เก็บรวบรวมและใช้ข้อมูลส่วนบุคคลที่ให้ไว้ในแบบฟอร์มนี้ เพื่อวัตถุประสงค์ในการดำเนินการเกี่ยวกับใบกำกับภาษีอิเล็กทรอนิกส์เท่านั้น
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="consent" required />
+          <label for="consent">ฉันยินยอมตามเงื่อนไขข้างต้น / I agree <span style="color:var(--red)">*</span></label>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submit-btn">
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        <span id="btn-text">ส่งแบบฟอร์ม / Submit</span>
+        <div class="spinner" id="spinner"></div>
+      </button>
+    </div>
+  </form>
+
+  <div id="success-screen">
+    <div class="success-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="success-title">ส่งเรื่องเรียบร้อยแล้ว!</div>
+    <div class="success-sub">เราได้รับคำขอของคุณแล้ว ทีมงานจะดำเนินการโดยเร็วที่สุด</div>
+    <div class="ticket-box">
+      <div class="ticket-label">Ticket Number</div>
+      <div class="ticket-number" id="ticket-display">BATA-ETAX-00001</div>
+      <div class="ticket-hint">📧 ระบบส่ง Email ยืนยันให้คุณแล้ว</div>
+    </div>
+    <div class="success-actions">
+      <a class="btn-outline" href="https://batasupportthailand-skipper.github.io/ticket-tracking/" target="_blank">🔍 ติดตามสถานะ</a>
+      <button class="btn-red" onclick="resetForm()">+ แจ้งปัญหาใหม่</button>
+    </div>
+  </div>
+</div>
+
+<footer>© 2025 Bata Thailand · ทีม e-Tax Support</footer>
+
+<script>
+  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzXCuUVc9q7K7fT3N5XG3DuOrWS7ZzSLLxzxvHhx460o70mzzZZa8pEF8Yh0CB-wWjA/exec";
+
+  function handleFile(input) {
+    var fileName = input.files[0] ? input.files[0].name : "";
+    document.getElementById("file-name").textContent = fileName ? "✓ " + fileName : "";
+  }
+
+  function submitForm(event) {
+    event.preventDefault(); // ป้องกันหน้าเว็บรีเฟรชเอง
+    
+    var btn = document.getElementById("submit-btn");
+    var spinner = document.getElementById("spinner");
+    var btnText = document.getElementById("btn-text");
+    
+    btn.disabled = true;
+    spinner.style.display = "block";
+    btnText.textContent = "กำลังส่ง...";
+
+    var payload = {
+      fullname: document.getElementById("fullname").value.trim(),
+      phone: document.getElementById("phone").value.trim(),
+      email: document.getElementById("email").value.trim(),
+      taxid: document.getElementById("taxid").value.trim(),
+      purchaseDate: document.getElementById("purchase-date").value,
+      branch: document.getElementById("branch").value.trim(),
+      receipt: document.getElementById("receipt").value.trim(),
+      issueType: document.getElementById("issue-type").value,
+      detail: document.getElementById("detail").value.trim()
+    };
+
+    var formData = new FormData();
+    for (var key in payload) { formData.append(key, payload[key]); }
+
+    fetch(SCRIPT_URL, { method: "POST", body: formData })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data.success) {
+        document.getElementById("ticket-display").textContent = data.ticketNo;
+        document.getElementById("etax-form").style.display = "none";
+        document.getElementById("success-screen").style.display = "block";
+        window.scrollTo({top: 0, behavior: "smooth"});
+      } else {
+        alert("เกิดข้อผิดพลาดจากระบบ: " + (data.error || "ลองใหม่อีกครั้ง"));
+        resetBtn();
+      }
+    })
+    .catch(function() {
+      alert("ไม่สามารถเชื่อมต่อระบบได้ กรุณาลองใหม่อีกครั้ง");
+      resetBtn();
+    });
+
+    function resetBtn() {
+      btn.disabled = false;
+      spinner.style.display = "none";
+      btnText.textContent = "ส่งแบบฟอร์ม / Submit";
+    }
+  }
+
+  function resetForm() {
+    document.getElementById("etax-form").reset();
+    document.getElementById("etax-form").style.display = "block";
+    document.getElementById("success-screen").style.display = "none";
+    document.getElementById("file-name").textContent = "";
+    window.scrollTo({top: 0, behavior: "smooth"});
+  }
+</script>
+</body>
+</html>
