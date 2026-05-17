@@ -153,7 +153,7 @@ tbody td{padding:11px 14px;vertical-align:middle}
 <body>
 
 <!-- LOCK -->
-<div id="lock">
+<div id="lock" onclick="document.getElementById('l-pass').focus()">
   <div class="lock-box">
     <div class="lock-logo">BATA<br>THAILAND</div>
     <div class="lock-title">Admin Dashboard</div>
@@ -167,7 +167,7 @@ tbody td{padding:11px 14px;vertical-align:middle}
     <div class="lock-field">
       <label>รหัสผ่านผู้ดูแลระบบ</label>
       <input class="lock-input" id="l-pass" type="password" placeholder="••••••••"
-        onkeydown="if(event.key='Enter') tryLogin()" autocomplete="off" />
+        onkeydown="if(event.key='Enter') tryLogin()" autocomplete="off" autofocus />
     </div>
     <button class="lock-btn" onclick="tryLogin()">เข้าสู่ระบบ</button>
     <div class="lock-error" id="l-error"></div>
@@ -362,7 +362,7 @@ const CAN_ADMIN  = u => u?.perm === "admin";
 
 // ── KEYBOARD SHORTCUT ─────────────────────────────────
 document.addEventListener("keydown", e => {
-  if (e.key === "F9") {
+  if (e.key === "F9" || (e.ctrlKey && e.shiftKey && e.key === "A")) {
     e.preventDefault();
     if (document.getElementById("lock").style.display !== "none") {
       document.getElementById("l-pass").focus();
