@@ -195,15 +195,11 @@ tbody td{padding:11px 14px;vertical-align:middle}
         <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
       </svg>กด F10 เพื่อเปิดหน้าต่างนี้ทุกเมื่อ
     </div>
+    
     <div class="lock-field">
-      <label>ชื่อผู้ใช้</label>
-      <input class="lock-input" id="l-user" placeholder="username" autocomplete="off"
-        onkeydown="if(event.key==='Enter')document.getElementById('l-pass').focus()" />
-    </div>
-    <div class="lock-field">
-      <label>รหัสผ่าน</label>
-      <input class="lock-input" id="l-pass" type="password" placeholder="••••••"
-        onkeydown="if(event.key==='Enter')tryLogin()" />
+      <label>รหัสผ่านผู้ดูแลระบบ</label>
+      <input class="lock-input" id="l-pass" type="password" placeholder="••••••••"
+        onkeydown="if(event.key==='Enter') tryLogin()" autocomplete="off" />
     </div>
     <button class="lock-btn" onclick="tryLogin()">เข้าสู่ระบบ</button>
     <div class="lock-error" id="l-error"></div>
@@ -446,17 +442,18 @@ tbody td{padding:11px 14px;vertical-align:middle}
 
 <script>
 // ══════════════════════════════════
-// USERS — เก็บใน localStorage, Admin แก้ได้
+// USERS — แก้ไขระบบบัญชี Map จากรหัสผ่าน (ไม่ต้องใช้ username)
 // ══════════════════════════════════
-const DEFAULT_USERS = [
-  { username:'admin',    password:'admin2025',  name:'Super Admin',   team:'Admin',         perm:'admin' },
-  { username:'bata01',   password:'bata2025',   name:'Bata Manager',  team:'Bata Team',     perm:'approve' },
-  { username:'bay01',    password:'bay2025',    name:'Bay e-Tax',     team:'Bay e-Tax Team',perm:'edit_status' },
-];
+const ADMIN_MAP = {
+  "bata212224": { username: "bata212224", name: "Bata Admin (Team A)", team: "Bata Team",     perm: "admin" },
+  "bay313326":  { username: "bay313326",  name: "Bay Admin (Team B)",  team: "Bay e-Tax Team", perm: "edit_status" }
+};
 
 function getUsers() {
-  try { return JSON.parse(localStorage.getItem('bata_users')) || DEFAULT_USERS; }
-  catch { return DEFAULT_USERS; }
+  try {
+    const custom = JSON.parse(localStorage.getItem('bata_users')) || [];
+    return custom;
+  } catch { return []; }
 }
 function saveUsers(users) {
   localStorage.setItem('bata_users', JSON.stringify(users));
@@ -476,25 +473,31 @@ const CAN_APPROVE      = u => ['approve','admin'].includes(u?.perm);
 const CAN_MANAGE_USERS = u => u?.perm === 'admin';
 
 // ══════════════════════════════════
-// F10 shortcut
+// F10 shortcut — แก้ไขให้โฟกัสไปที่ช่องรหัสผ่านทันที
 // ══════════════════════════════════
 document.addEventListener('keydown', e => {
   if (e.key === 'F10') {
     e.preventDefault();
-    if (document.getElementById('lock').style.display !== 'none') {
-      document.getElementById('l-user').focus();
+    const lockDiv = document.getElementById('lock');
+    if (lockDiv && lockDiv.style.display !== 'none') {
+      document.getElementById('l-pass').focus();
     }
   }
 });
 
 // ══════════════════════════════════
-// LOCK / LOGIN / LOGOUT
+// LOCK / LOGIN / LOGOUT — ปรับปรุงให้ล็อกอินด้วยรหัสผ่านช่องเดียว
 // ══════════════════════════════════
 function tryLogin() {
-  const u = document.getElementById('l-user').value.trim();
-  const p = document.getElementById('l-pass').value;
-  const users = getUsers();
-  const found = users.find(x => x.username === u && x.password === p);
+  const p = document.getElementById('l-pass').value.trim();
+  
+  let found = ADMIN_MAP[p];
+  
+  if (!found) {
+    const customUsers = getUsers();
+    found = customUsers.find(x => x.password === p);
+  }
+
   if (found) {
     currentUser = found;
     document.getElementById('lock').style.display = 'none';
@@ -502,10 +505,11 @@ function tryLogin() {
     document.getElementById('tb-user').textContent = found.name;
     document.getElementById('tb-perm').textContent = permLabel(found.perm);
     document.getElementById('btn-users').style.display = CAN_MANAGE_USERS(found) ? '' : 'none';
+    document.getElementById('l-pass').value = '';
     loadData();
   } else {
     const err = document.getElementById('l-error');
-    err.textContent = 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
+    err.textContent = 'รหัสผ่านเข้าใช้งานไม่ถูกต้อง';
     document.getElementById('l-pass').value = '';
     setTimeout(() => err.textContent = '', 2500);
   }
@@ -514,7 +518,8 @@ function tryLogin() {
 function doLock() {
   document.getElementById('app').style.display  = 'none';
   document.getElementById('lock').style.display = 'flex';
-  document.getElementById('l-user').value = '';
+  const userField = document.getElementById('l-user');
+  if (userField) userField.value = '';
   document.getElementById('l-pass').value = '';
   currentUser = null; allTickets = []; currentIdx = null;
 }
@@ -531,7 +536,7 @@ function closeGasModal() { document.getElementById('gas-modal').classList.remove
 function saveGasUrl()    { GAS_URL = document.getElementById('gas-input').value.trim(); localStorage.setItem('bata_admin_gas', GAS_URL); closeGasModal(); loadData(); }
 
 // ══════════════════════════════════
-// USER MODAL
+// USER MODAL — ปรับให้แสดงตามโครงสร้างรหัสผ่านช่องเดียว
 // ══════════════════════════════════
 function openUserModal() {
   renderUserTable();
@@ -543,28 +548,35 @@ function renderUserTable() {
   const users = getUsers();
   document.getElementById('user-tbody').innerHTML = users.map((u, i) => `
     <tr>
-      <td><strong>${esc(u.username)}</strong></td>
+      <td><strong>${esc(u.password)}</strong></td>
       <td>${esc(u.name)}</td>
       <td>${esc(u.team)}</td>
       <td><span class="badge ${u.perm==='admin'?'b-waiting':u.perm==='approve'?'b-done':'b-received'}">${permLabel(u.perm)}</span></td>
-      <td>${i===0?'':'<button class="btn-del" onclick="delUser('+i+')">ลบ</button>'}</td>
+      <td><button class="btn-del" onclick="delUser(${i})">ลบ</button></td>
     </tr>
   `).join('');
 }
 
 function addUser() {
-  const u = document.getElementById('au-user').value.trim();
   const p = document.getElementById('au-pass').value.trim();
   const n = document.getElementById('au-name').value.trim();
   const t = document.getElementById('au-team').value;
   const pm= document.getElementById('au-perm').value;
-  if (!u || !p || !n) return alert('กรุณากรอกข้อมูลให้ครบ');
+  if (!p || !n) return alert('กรุณากรอกข้อมูลให้ครบ');
+  
+  if (ADMIN_MAP[p]) return alert('รหัสผ่านนี้ซ้ำกับระบบหลักประจำทีม');
+  
   const users = getUsers();
-  if (users.find(x => x.username === u)) return alert('Username นี้มีอยู่แล้ว');
-  users.push({ username:u, password:p, name:n, team:t, perm:pm });
+  if (users.find(x => x.password === p)) return alert('รหัสผ่านนี้มีอยู่แล้วในระบบ');
+  
+  users.push({ username: p, password: p, name: n, team: t, perm: pm });
   saveUsers(users);
   renderUserTable();
-  ['au-user','au-pass','au-name'].forEach(id => document.getElementById(id).value = '');
+  
+  const auUserField = document.getElementById('au-user');
+  if (auUserField) auUserField.value = '';
+  document.getElementById('au-pass').value = '';
+  document.getElementById('au-name').value = '';
 }
 
 function delUser(i) {
