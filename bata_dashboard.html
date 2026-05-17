@@ -476,7 +476,7 @@ const CAN_MANAGE_USERS = u => u?.perm === 'admin';
 // F10 shortcut — แก้ไขให้โฟกัสไปที่ช่องรหัสผ่านทันที
 // ══════════════════════════════════
 document.addEventListener('keydown', e => {
-  if (e.key === 'F10') {
+  if (e.key === 'F9') {
     e.preventDefault();
     const lockDiv = document.getElementById('lock');
     if (lockDiv && lockDiv.style.display !== 'none') {
