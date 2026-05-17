@@ -290,9 +290,7 @@
       <div class="logo-dept">e-Tax Support</div>
     </div>
   </div>
-  <a class="back-link" href="index.html">
-    ← กลับหน้าหลัก
-  </a>
+  <a class="back-link" href="index.html">← กลับหน้าหลัก</a>
 </header>
 
 <div class="hero">
@@ -302,10 +300,8 @@
 
 <div class="container">
 
-  <!-- FORM -->
   <div id="form-section">
 
-    <!-- ข้อมูลติดต่อ -->
     <div class="form-card">
       <div class="section-title">ข้อมูลติดต่อ / Contact Information</div>
 
@@ -334,7 +330,6 @@
       </div>
     </div>
 
-    <!-- ข้อมูลการซื้อ -->
     <div class="form-card">
       <div class="section-title">ข้อมูลการซื้อ / Purchase Information</div>
 
@@ -358,7 +353,6 @@
       </div>
     </div>
 
-    <!-- รายละเอียดปัญหา -->
     <div class="form-card">
       <div class="section-title">รายละเอียดปัญหา / Issue Detail</div>
 
@@ -391,7 +385,6 @@
       </div>
     </div>
 
-    <!-- Consent -->
     <div class="form-card">
       <div class="section-title">การยินยอม / Consent</div>
       <div class="consent-box">
@@ -413,7 +406,6 @@
 
   </div>
 
-  <!-- SUCCESS -->
   <div id="success-screen">
     <div class="success-icon">
       <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
@@ -428,12 +420,8 @@
     </div>
 
     <div class="success-actions">
-      <a class="btn-outline" href="https://batasupportthailand-skipper.github.io/ticket-tracking/" target="_blank">
-        🔍 ติดตามสถานะ
-      </a>
-      <button class="btn-red" onclick="resetForm()">
-        + แจ้งปัญหาใหม่
-      </button>
+      <a class="btn-outline" href="https://batasupportthailand-skipper.github.io/ticket-tracking/" target="_blank">🔍 ติดตามสถานะ</a>
+      <button class="btn-red" onclick="resetForm()">+ แจ้งปัญหาใหม่</button>
     </div>
   </div>
 
@@ -509,54 +497,40 @@
       timestamp: new Date().toLocaleString("th-TH", {timeZone: "Asia/Bangkok"})
     };
 
-    // === เปลี่ยนวิธีส่งข้อมูลเป็น FormData เพื่อให้ดึงเลข Ticket จริงกลับมาโชว์ได้ ===
     var formData = new FormData();
     for (var key in payload) {
       formData.append(key, payload[key]);
     }
 
-    fetch(SCRIPT_URL, {
-      method: "POST",
-      body: formData // ส่งแบบ Form Data แทน JSON string
-    })
-    .then(function(res) { 
-      return res.json(); 
-    })
+    fetch(SCRIPT_URL, { method: "POST", body: formData })
+    .then(function(res) { return res.json(); })
     .then(function(data) {
       if (data.success) {
-        // นำเลข Ticket จริงที่รันจาก Google Sheet มาแสดงผลบนหน้าจอ
         document.getElementById("ticket-display").textContent = data.ticketNo;
-        
-        // สลับหน้าจอไปที่หน้าสำเร็จ
         document.getElementById("form-section").style.display = "none";
         document.getElementById("success-screen").style.display = "block";
         window.scrollTo({top: 0, behavior: "smooth"});
       } else {
         alert("เกิดข้อผิดพลาดจากระบบ: " + (data.error || "ลองใหม่อีกครั้ง"));
-        btn.disabled = false;
-        spinner.style.display = "none";
-        btnText.textContent = "ส่งแบบฟอร์ม / Submit";
+        resetBtn();
       }
     })
     .catch(function(error) {
       console.error("Error:", error);
-      alert("ไม่สามารถเชื่อมต่อระบบได้ กรุณาตรวจสอบการเชื่อมต่อแล้วลองใหม่อีกครั้ง");
+      alert("ไม่สามารถเชื่อมต่อระบบได้ กรุณาลองใหม่อีกครั้ง");
+      resetBtn();
+    });
+
+    function resetBtn() {
       btn.disabled = false;
       spinner.style.display = "none";
       btnText.textContent = "ส่งแบบฟอร์ม / Submit";
-    });
-    .catch(function() {
-      alert("ไม่สามารถเชื่อมต่อได้ กรุณาลองใหม่อีกครั้ง");
-      btn.disabled = false;
-      spinner.style.display = "none";
-      btnText.textContent = "ส่งแบบฟอร์ม / Submit";
-    });
+    }
   }
 
   function resetForm() {
     document.getElementById("form-section").style.display = "block";
     document.getElementById("success-screen").style.display = "none";
-    document.querySelector("form") && document.querySelector("form").reset();
     ["fullname","phone","email","taxid","purchase-date","branch","receipt","issue-type","detail"].forEach(function(id) {
       var el = document.getElementById(id);
       if (el) el.value = "";
