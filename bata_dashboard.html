@@ -20,7 +20,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--font);background:var(--bg);color:var(--g800);min-height:100vh}
-#lock{position:fixed;inset:0;background:#1a1a2e;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column}
+#lock{position:fixed;inset:0;background:#1a1a2e;display:none;align-items:center;justify-content:center;z-index:9999;flex-direction:column}
 .lock-box{background:var(--white);border-radius:20px;padding:2.5rem 2rem;width:360px;box-shadow:0 20px 60px rgba(0,0,0,.5);text-align:center}
 .lock-logo{display:inline-flex;background:var(--red);color:#fff;font-weight:700;font-size:12px;padding:6px 10px;border-radius:5px;line-height:1.3;letter-spacing:.5px;margin-bottom:1.5rem}
 .lock-title{font-size:20px;font-weight:700;color:var(--g800);margin-bottom:4px}
@@ -167,7 +167,7 @@ tbody td{padding:11px 14px;vertical-align:middle}
     <div class="lock-field">
       <label>รหัสผ่านผู้ดูแลระบบ</label>
       <input class="lock-input" id="l-pass" type="password" placeholder="••••••••"
-        onkeydown="if(event.key='Enter') tryLogin()" autocomplete="off" autofocus />
+        onkeydown="if(event.key='Enter') tryLogin()" autocomplete="off" />
     </div>
     <button class="lock-btn" onclick="tryLogin()">เข้าสู่ระบบ</button>
     <div class="lock-error" id="l-error"></div>
@@ -360,15 +360,23 @@ const CAN_EDIT   = u => ["edit_status","approve","admin"].includes(u?.perm);
 const CAN_APPROVE= u => ["approve","admin"].includes(u?.perm);
 const CAN_ADMIN  = u => u?.perm === "admin";
 
-// ── KEYBOARD SHORTCUT ─────────────────────────────────
-document.addEventListener("keydown", e => {
-  if (e.key === "F9" || (e.ctrlKey && e.shiftKey && e.key === "A")) {
-    e.preventDefault();
-    if (document.getElementById("lock").style.display !== "none") {
-      document.getElementById("l-pass").focus();
-    }
+// ── HASH-BASED ACCESS ────────────────────────────────
+function checkAccess() {
+  const hash = window.location.hash;
+  const lock = document.getElementById("lock");
+  if (hash === "#admin" || hash === "#bata" || hash === "#bay") {
+    lock.style.display = "flex";
+    setTimeout(() => document.getElementById("l-pass").focus(), 100);
+  } else {
+    lock.style.display = "none";
+    document.getElementById("app").style.display = "none";
   }
-});
+}
+
+// ตรวจสอบตอนโหลด
+window.addEventListener("load", checkAccess);
+// ตรวจสอบเมื่อ hash เปลี่ยน (กรณีพิมพ์ใน URL bar)
+window.addEventListener("hashchange", checkAccess);
 
 // ── LOGIN ─────────────────────────────────────────────
 function tryLogin() {
@@ -403,9 +411,11 @@ function tryLogin() {
 // ── LOCK ──────────────────────────────────────────────
 function doLock() {
   document.getElementById("app").style.display  = "none";
-  document.getElementById("lock").style.display = "flex";
+  document.getElementById("lock").style.display = "none";
   document.getElementById("l-pass").value = "";
   currentUser = null; allTickets = []; currentIdx = null;
+  // ล้าง hash เพื่อ "ออกจากระบบ" จริงๆ
+  history.pushState("", document.title, window.location.pathname);
 }
 
 function permLabel(p) {
