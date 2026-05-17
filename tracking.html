@@ -301,7 +301,6 @@
   <div class="bata-page-title">ติดตามสถานะแจ้งปัญหา</div>
   <div class="bata-page-subtitle">กรอกเลข Ticket เพื่อตรวจสอบสถานะการแก้ไขปัญหา</div>
 
-  <!-- Search Card -->
   <div class="bata-card">
     <div class="bata-card-header">
       <i class="ti ti-search" aria-hidden="true"></i>
@@ -320,31 +319,21 @@
           maxlength="30"
         />
       </div>
-      <div class="bata-input-group">
-        <label class="bata-label" for="email-input">อีเมลผู้แจ้ง (ไม่บังคับ)</label>
-        <input
-          class="bata-input"
-          id="email-input"
-          type="email"
-          placeholder="example@bata.com"
-        />
-      </div>
       <div class="bata-error" id="err-msg">
         <i class="ti ti-alert-circle" style="font-size:17px; flex-shrink:0;" aria-hidden="true"></i>
         <span id="err-text">ไม่พบ Ticket นี้ในระบบ กรุณาตรวจสอบเลข Ticket อีกครั้ง</span>
       </div>
-      <button class="bata-btn" onclick="searchTicket()">
+      <button class="bata-btn" id="submit-btn" onclick="searchTicket()">
         <i class="ti ti-search" style="font-size:17px;" aria-hidden="true"></i>
-        ตรวจสอบสถานะ
+        <span id="btn-text">ตรวจสอบสถานะ</span>
       </button>
     </div>
   </div>
 
-  <!-- Result Card -->
   <div class="bata-card bata-result" id="result-card">
     <div class="bata-card-header">
       <i class="ti ti-file-description" aria-hidden="true"></i>
-      <p class="bata-card-header-title" id="result-ticket-num">TK-0001</p>
+      <p class="bata-card-header-title" id="result-ticket-num">-</p>
     </div>
     <div class="bata-card-body">
       <div class="bata-ticket-meta" id="meta-grid"></div>
@@ -355,7 +344,7 @@
       </div>
     </div>
     <div class="bata-card-footer">
-      อัปเดตล่าสุด: <span id="last-update"></span>
+      ค้นหาเมื่อ: <span id="last-update"></span>
     </div>
   </div>
 </div>
@@ -363,114 +352,111 @@
 <div class="page-footer">© 2567 Bata Thailand Co., Ltd. – e-TAX Support System</div>
 
 <script>
-  /* =============================================
-     MOCK DATA – เปลี่ยนเป็น API call จริงได้เลย
-     ============================================= */
-  const mockData = {
-    'TK-0001': {
-      subject: 'ออกใบกำกับภาษีไม่ได้',
-      requester: 'สมชาย ใจดี',
-      dept: 'สาขาสีลม',
-      priority: 'สูง',
-      statusLabel: 'กำลังดำเนินการ',
-      badgeClass: 'badge-inprogress',
-      created: '14 พ.ค. 2567, 09:30',
-      updated: '17 พ.ค. 2567, 10:15',
-      timeline: [
-        { done: true,  title: 'รับเรื่องแล้ว',          desc: '14 พ.ค. 2567, 09:35 – ทีม e-TAX รับเคสเรียบร้อย' },
-        { done: true,  title: 'กำลังตรวจสอบ',           desc: '15 พ.ค. 2567, 14:00 – ทีมเทคนิคตรวจสอบระบบ' },
-        { done: false, title: 'กำลังแก้ไข',              desc: 'รอดำเนินการ' },
-        { done: false, title: 'แก้ไขสำเร็จ / ปิดเคส',  desc: 'รอดำเนินการ' },
-      ]
-    },
-    'TK-0002': {
-      subject: 'ระบบ e-TAX ล็อกอินไม่ได้',
-      requester: 'วิภา รักดี',
-      dept: 'สำนักงานใหญ่',
-      priority: 'ปกติ',
-      statusLabel: 'แก้ไขสำเร็จ',
-      badgeClass: 'badge-resolved',
-      created: '10 พ.ค. 2567, 13:00',
-      updated: '13 พ.ค. 2567, 16:40',
-      timeline: [
-        { done: true, title: 'รับเรื่องแล้ว',          desc: '10 พ.ค. 2567, 13:10 – ทีม e-TAX รับเคสเรียบร้อย' },
-        { done: true, title: 'กำลังตรวจสอบ',           desc: '11 พ.ค. 2567, 09:00 – ตรวจพบปัญหา password หมดอายุ' },
-        { done: true, title: 'กำลังแก้ไข',              desc: '12 พ.ค. 2567, 11:30 – รีเซ็ตรหัสผ่านและทดสอบ' },
-        { done: true, title: 'แก้ไขสำเร็จ / ปิดเคส',  desc: '13 พ.ค. 2567, 16:40 – ปิดเคสเรียบร้อย' },
-      ]
-    }
-  };
+  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzL-qfS4NyFBidwDfano1KEyV3xcHKaKhCvjTLaYVRIvvNBYSVRrVwlazIo-1_uCnv9/exec";
 
-  /* =============================================
-     SEARCH FUNCTION
-     หากต้องการเชื่อม API จริง ให้แทน mockData[ticketId]
-     ด้วย fetch('/api/tickets/' + ticketId).then(r => r.json())
-     ============================================= */
-  async function searchTicket() {
-    const ticketId = document.getElementById('ticket-input').value.trim().toUpperCase();
-    const errEl    = document.getElementById('err-msg');
-    const resultCard = document.getElementById('result-card');
+  function searchTicket() {
+    var ticketId = document.getElementById('ticket-input').value.trim();
+    var errEl = document.getElementById('err-msg');
+    var errText = document.getElementById('err-text');
+    var resultCard = document.getElementById('result-card');
+    var btnText = document.getElementById('btn-text');
+    var btn = document.getElementById('submit-btn');
 
     errEl.classList.remove('visible');
     resultCard.classList.remove('visible');
 
     if (!ticketId) {
-      document.getElementById('err-text').textContent = 'กรุณากรอกเลข Ticket ก่อนตรวจสอบ';
+      errText.textContent = 'กรุณากรอกเลข Ticket ก่อนตรวจสอบ';
       errEl.classList.add('visible');
       return;
     }
 
-    const data = mockData[ticketId];
+    btn.disabled = true;
+    btnText.textContent = 'กำลังตรวจสอบ...';
 
-    if (!data) {
-      document.getElementById('err-text').textContent =
-        'ไม่พบ Ticket "' + ticketId + '" ในระบบ กรุณาตรวจสอบเลข Ticket อีกครั้ง';
+    fetch(SCRIPT_URL + "?ticketNo=" + encodeURIComponent(ticketId))
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      btn.disabled = false;
+      btnText.textContent = 'ตรวจสอบสถานะ';
+
+      if (data.success) {
+        document.getElementById('result-ticket-num').textContent = data.ticketNo;
+        document.getElementById('last-update').textContent = new Date().toLocaleString('th-TH');
+
+        var badgeClass = 'badge-open';
+        if (data.status === 'กำลังดำเนินการ') badgeClass = 'badge-inprogress';
+        if (data.status === 'แก้ไขเรียบร้อย') badgeClass = 'badge-resolved';
+        if (data.status === 'ปิดเคส') badgeClass = 'badge-closed';
+
+        document.getElementById('meta-grid').innerHTML = `
+          <div class="bata-meta-item">
+            <div class="bata-meta-label">สถานะ</div>
+            <div class="bata-meta-value">
+              <span class="bata-status-badge ${badgeClass}">${data.status || 'รับเรื่องแล้ว'}</span>
+            </div>
+          </div>
+          <div class="bata-meta-item">
+            <div class="bata-meta-label">ผู้แจ้ง</div>
+            <div class="bata-meta-value">${data.fullname || '-'}</div>
+          </div>
+          <div class="bata-meta-item">
+            <div class="bata-meta-label">หมวดหมู่ปัญหา</div>
+            <div class="bata-meta-value">${data.issueType || '-'}</div>
+          </div>
+          <div class="bata-meta-item">
+            <div class="bata-meta-label">ผู้รับผิดชอบ</div>
+            <div class="bata-meta-value">${data.assignee || '-'}</div>
+          </div>
+          <div class="bata-meta-item" style="grid-column: span 2;">
+            <div class="bata-meta-label">วันที่ส่งเรื่องเข้าระบบ</div>
+            <div class="bata-meta-value">${data.timestamp || '-'}</div>
+          </div>
+        `;
+
+        var currentStatus = data.status || 'รับเรื่องแล้ว';
+        var step1 = currentStatus === 'รับเรื่องแล้ว' || currentStatus === 'กำลังดำเนินการ' || currentStatus === 'แก้ไขเรียบร้อย' || currentStatus === 'ปิดเคส';
+        var step2 = currentStatus === 'กำลังดำเนินการ' || currentStatus === 'แก้ไขเรียบร้อย' || currentStatus === 'ปิดเคส';
+        var step3 = currentStatus === 'แก้ไขเรียบร้อย' || currentStatus === 'ปิดเคส';
+        var step4 = currentStatus === 'ปิดเคส';
+
+        document.getElementById('timeline-area').innerHTML = `
+          <div class="bata-tl-item">
+            <div class="bata-tl-dot ${step1 ? 'done' : ''}"></div>
+            <div class="bata-tl-title" style="color:${step1 ? '#1a1a1a' : '#ccc'}">รับเรื่องแล้ว</div>
+            <div class="bata-tl-desc">${step1 ? 'ระบบได้รับข้อมูลคำขอ e-Tax เรียบร้อยแล้ว' : 'รอดำเนินการ'}</div>
+          </div>
+          <div class="bata-tl-item">
+            <div class="bata-tl-dot ${step2 ? 'done' : ''}"></div>
+            <div class="bata-tl-title" style="color:${step2 ? '#1a1a1a' : '#ccc'}">กำลังดำเนินการ</div>
+            <div class="bata-tl-desc">${step2 ? 'เจ้าหน้าที่และทีมบัญชีกำลังตรวจสอบเอกสาร' : 'รอดำเนินการ'}</div>
+          </div>
+          <div class="bata-tl-item">
+            <div class="bata-tl-dot ${step3 ? 'done' : ''}"></div>
+            <div class="bata-tl-title" style="color:${step3 ? '#1a1a1a' : '#ccc'}">แก้ไขเรียบร้อย</div>
+            <div class="bata-tl-desc">${step3 ? 'ดำเนินการแก้ไขข้อมูลและจัดส่งเอกสารใหม่เรียบร้อยแล้ว' : 'รอดำเนินการ'}</div>
+          </div>
+          <div class="bata-tl-item">
+            <div class="bata-tl-dot ${step4 ? 'done' : ''}"></div>
+            <div class="bata-tl-title" style="color:${step4 ? '#1a1a1a' : '#ccc'}">ปิดเคส</div>
+            <div class="bata-tl-desc">${step4 ? 'ลูกค้ายืนยันการรับเอกสาร สิ้นสุดการดำเนินการ' : 'รอดำเนินการ'}</div>
+          </div>
+        `;
+
+        resultCard.classList.add('visible');
+        resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else {
+        errText.textContent = 'ไม่พบ Ticket "' + ticketId + '" ในระบบ กรุณาตรวจสอบเลข Ticket อีกครั้ง';
+        errEl.classList.add('visible');
+      }
+    })
+    .catch(function(error) {
+      console.error(error);
+      btn.disabled = false;
+      btnText.textContent = 'ตรวจสอบสถานะ';
+      errText.textContent = 'เกิดข้อผิดพลาดในการเชื่อมต่อระบบฐานข้อมูล กรุณาลองใหม่อีกครั้ง';
       errEl.classList.add('visible');
-      return;
-    }
-
-    document.getElementById('result-ticket-num').textContent = ticketId + ' – ' + data.subject;
-    document.getElementById('last-update').textContent = data.updated;
-
-    document.getElementById('meta-grid').innerHTML = `
-      <div class="bata-meta-item">
-        <div class="bata-meta-label">สถานะ</div>
-        <div class="bata-meta-value">
-          <span class="bata-status-badge ${data.badgeClass}">${data.statusLabel}</span>
-        </div>
-      </div>
-      <div class="bata-meta-item">
-        <div class="bata-meta-label">ความสำคัญ</div>
-        <div class="bata-meta-value">${data.priority}</div>
-      </div>
-      <div class="bata-meta-item">
-        <div class="bata-meta-label">ผู้แจ้ง</div>
-        <div class="bata-meta-value">${data.requester}</div>
-      </div>
-      <div class="bata-meta-item">
-        <div class="bata-meta-label">หน่วยงาน</div>
-        <div class="bata-meta-value">${data.dept}</div>
-      </div>
-      <div class="bata-meta-item">
-        <div class="bata-meta-label">วันที่แจ้ง</div>
-        <div class="bata-meta-value">${data.created}</div>
-      </div>
-      <div class="bata-meta-item">
-        <div class="bata-meta-label">อัปเดตล่าสุด</div>
-        <div class="bata-meta-value">${data.updated}</div>
-      </div>
-    `;
-
-    document.getElementById('timeline-area').innerHTML = data.timeline.map(t => `
-      <div class="bata-tl-item">
-        <div class="bata-tl-dot ${t.done ? 'done' : ''}"></div>
-        <div class="bata-tl-title" style="color:${t.done ? '#1a1a1a' : '#ccc'}">${t.title}</div>
-        <div class="bata-tl-desc">${t.desc}</div>
-      </div>
-    `).join('');
-
-    resultCard.classList.add('visible');
-    resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
   }
 
   document.getElementById('ticket-input').addEventListener('keydown', function(e) {
