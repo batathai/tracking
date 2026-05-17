@@ -1,83 +1,481 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Check Status - ระบบติดตามสถานะ e-Tax</title>
-    <style>
-        body { font-family: 'Sarabun', sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
-        h2 { color: #1a73e8; margin-bottom: 25px; }
-        .input-group { margin-bottom: 20px; }
-        input { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; box-sizing: border-box; font-size: 16px; outline: none; transition: border-color 0.3s; }
-        input:focus { border-color: #1a73e8; }
-        button { width: 100%; background-color: #1a73e8; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; transition: background 0.3s; }
-        button:hover { background-color: #1557b0; }
-        #result { margin-top: 25px; min-height: 60px; padding: 15px; border-radius: 8px; display: none; }
-        .success { display: block !important; background-color: #e8f0fe; color: #1967d2; border: 1px solid #d2e3fc; line-height: 1.6; }
-        .error { display: block !important; background-color: #fce8e6; color: #c5221f; border: 1px solid #fad2cf; }
-        .loading { font-size: 14px; color: #666; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ติดตามสถานะแจ้งปัญหา – Bata e-TAX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Sarabun', sans-serif;
+      background: #f5f5f5;
+      min-height: 100vh;
+      color: #1a1a1a;
+    }
+
+    /* ========== HEADER ========== */
+    .bata-header { background: #CC0000; }
+
+    .bata-header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 32px;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .bata-logo-area { display: flex; align-items: center; gap: 14px; }
+
+    .bata-logo-box {
+      background: white;
+      color: #CC0000;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      padding: 5px 14px;
+      border-radius: 3px;
+    }
+
+    .bata-etax-label {
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .bata-system-label {
+      color: rgba(255,255,255,0.65);
+      font-size: 11px;
+      margin-top: 2px;
+    }
+
+    .bata-user-info {
+      color: rgba(255,255,255,0.75);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .bata-header-nav {
+      background: #AA0000;
+      padding: 10px 32px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .bata-nav-item { color: rgba(255,255,255,0.7); font-size: 13px; padding: 4px 8px; cursor: pointer; }
+    .bata-nav-sep  { color: rgba(255,255,255,0.4); font-size: 13px; }
+    .bata-nav-active { color: #fff; font-weight: 600; }
+
+    /* ========== BODY ========== */
+    .bata-body {
+      max-width: 720px;
+      margin: 36px auto;
+      padding: 0 20px;
+    }
+
+    .bata-page-title  { font-size: 22px; font-weight: 700; color: #1a1a1a; margin-bottom: 4px; }
+    .bata-page-subtitle { font-size: 14px; color: #777; margin-bottom: 24px; }
+
+    /* ========== CARD ========== */
+    .bata-card {
+      background: white;
+      border-radius: 10px;
+      border: 0.5px solid #e0e0e0;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .bata-card-header {
+      background: #CC0000;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .bata-card-header i { color: rgba(255,255,255,0.85); font-size: 18px; }
+    .bata-card-header-title { color: white; font-size: 15px; font-weight: 600; }
+    .bata-card-body { padding: 22px; }
+
+    /* ========== FORM ========== */
+    .bata-input-group { margin-bottom: 14px; }
+
+    .bata-label {
+      font-size: 13px;
+      color: #555;
+      font-weight: 500;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .bata-input {
+      width: 100%;
+      height: 42px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 0 14px;
+      font-family: 'Sarabun', sans-serif;
+      font-size: 14px;
+      color: #1a1a1a;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .bata-input:focus {
+      border-color: #CC0000;
+      box-shadow: 0 0 0 3px rgba(204,0,0,0.08);
+    }
+
+    .bata-btn {
+      width: 100%;
+      height: 44px;
+      background: #CC0000;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-family: 'Sarabun', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.15s, transform 0.1s;
+      margin-top: 18px;
+    }
+
+    .bata-btn:hover  { background: #AA0000; }
+    .bata-btn:active { background: #880000; transform: scale(0.99); }
+
+    /* ========== ERROR ========== */
+    .bata-error {
+      background: #fff5f5;
+      border: 1px solid #ffcccc;
+      border-radius: 6px;
+      padding: 12px 16px;
+      color: #CC0000;
+      font-size: 14px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .bata-error.visible { display: flex; }
+
+    /* ========== RESULT ========== */
+    .bata-result { display: none; }
+    .bata-result.visible { display: block; }
+
+    .bata-divider { border: none; border-top: 0.5px solid #eee; margin: 18px 0; }
+
+    .bata-ticket-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .bata-meta-item {
+      background: #fafafa;
+      border: 0.5px solid #eee;
+      border-radius: 6px;
+      padding: 10px 14px;
+    }
+
+    .bata-meta-label {
+      font-size: 11px;
+      color: #999;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 3px;
+    }
+
+    .bata-meta-value { font-size: 14px; color: #1a1a1a; font-weight: 500; }
+
+    /* ========== STATUS BADGES ========== */
+    .bata-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .badge-open       { background: #FFF3E0; color: #E65100; }
+    .badge-inprogress { background: #E3F2FD; color: #1565C0; }
+    .badge-resolved   { background: #E8F5E9; color: #2E7D32; }
+    .badge-closed     { background: #EEEEEE; color: #424242; }
+
+    /* ========== TIMELINE ========== */
+    .bata-timeline { position: relative; padding-left: 26px; }
+
+    .bata-timeline::before {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 6px;
+      bottom: 6px;
+      width: 2px;
+      background: #eee;
+      border-radius: 2px;
+    }
+
+    .bata-tl-item { position: relative; margin-bottom: 18px; }
+
+    .bata-tl-dot {
+      position: absolute;
+      left: -22px;
+      top: 4px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid #CC0000;
+      background: white;
+      transition: background 0.2s;
+    }
+    .bata-tl-dot.done { background: #CC0000; }
+
+    .bata-tl-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+    .bata-tl-desc  { font-size: 12px; color: #888; }
+
+    /* ========== FOOTER ========== */
+    .bata-card-footer {
+      text-align: center;
+      padding: 12px 20px;
+      font-size: 12px;
+      color: #aaa;
+      border-top: 0.5px solid #eee;
+    }
+
+    .page-footer {
+      text-align: center;
+      padding: 24px 16px;
+      font-size: 12px;
+      color: #bbb;
+    }
+
+    @media (max-width: 500px) {
+      .bata-header-top { padding: 10px 16px; }
+      .bata-header-nav { padding: 8px 16px; }
+      .bata-body { margin: 20px auto; }
+      .bata-ticket-meta { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
 
-<div class="card">
-    <h2>ติดตามสถานะแจ้งปัญหา</h2>
-    <div class="input-group">
-        <input type="text" id="ticketInput" placeholder="กรอกเลข Ticket (เช่น TK-0001)">
+<div class="bata-header">
+  <div class="bata-header-top">
+    <div class="bata-logo-area">
+      <div class="bata-logo-box">BATA</div>
+      <div>
+        <div class="bata-etax-label">e-TAX System</div>
+        <div class="bata-system-label">Bata Thailand Co., Ltd.</div>
+      </div>
     </div>
-    <button onclick="checkStatus()">ตรวจสอบสถานะ</button>
-    <div id="result"></div>
+    <div class="bata-user-info">
+      <i class="ti ti-user" style="font-size:15px;" aria-hidden="true"></i>
+      ระบบสนับสนุน
+    </div>
+  </div>
+  <div class="bata-header-nav">
+    <span class="bata-nav-item">หน้าหลัก</span>
+    <span class="bata-nav-sep">›</span>
+    <span class="bata-nav-item">ระบบ e-TAX</span>
+    <span class="bata-nav-sep">›</span>
+    <span class="bata-nav-item bata-nav-active">ติดตามสถานะเคส</span>
+  </div>
 </div>
 
+<div class="bata-body">
+  <div class="bata-page-title">ติดตามสถานะแจ้งปัญหา</div>
+  <div class="bata-page-subtitle">กรอกเลข Ticket เพื่อตรวจสอบสถานะการแก้ไขปัญหา</div>
+
+  <!-- Search Card -->
+  <div class="bata-card">
+    <div class="bata-card-header">
+      <i class="ti ti-search" aria-hidden="true"></i>
+      <p class="bata-card-header-title">ค้นหาเคสงาน</p>
+    </div>
+    <div class="bata-card-body">
+      <div class="bata-input-group">
+        <label class="bata-label" for="ticket-input">
+          เลข Ticket <span style="color:#CC0000">*</span>
+        </label>
+        <input
+          class="bata-input"
+          id="ticket-input"
+          type="text"
+          placeholder="เช่น TK-0001, TK-2024-001"
+          maxlength="30"
+        />
+      </div>
+      <div class="bata-input-group">
+        <label class="bata-label" for="email-input">อีเมลผู้แจ้ง (ไม่บังคับ)</label>
+        <input
+          class="bata-input"
+          id="email-input"
+          type="email"
+          placeholder="example@bata.com"
+        />
+      </div>
+      <div class="bata-error" id="err-msg">
+        <i class="ti ti-alert-circle" style="font-size:17px; flex-shrink:0;" aria-hidden="true"></i>
+        <span id="err-text">ไม่พบ Ticket นี้ในระบบ กรุณาตรวจสอบเลข Ticket อีกครั้ง</span>
+      </div>
+      <button class="bata-btn" onclick="searchTicket()">
+        <i class="ti ti-search" style="font-size:17px;" aria-hidden="true"></i>
+        ตรวจสอบสถานะ
+      </button>
+    </div>
+  </div>
+
+  <!-- Result Card -->
+  <div class="bata-card bata-result" id="result-card">
+    <div class="bata-card-header">
+      <i class="ti ti-file-description" aria-hidden="true"></i>
+      <p class="bata-card-header-title" id="result-ticket-num">TK-0001</p>
+    </div>
+    <div class="bata-card-body">
+      <div class="bata-ticket-meta" id="meta-grid"></div>
+      <hr class="bata-divider">
+      <div style="margin-bottom: 8px;">
+        <div class="bata-label" style="margin-bottom: 12px;">ความคืบหน้า</div>
+        <div class="bata-timeline" id="timeline-area"></div>
+      </div>
+    </div>
+    <div class="bata-card-footer">
+      อัปเดตล่าสุด: <span id="last-update"></span>
+    </div>
+  </div>
+</div>
+
+<div class="page-footer">© 2567 Bata Thailand Co., Ltd. – e-TAX Support System</div>
+
 <script>
-    // ดึง URL หลักจากลิงก์ที่คุณส่งมาเพื่อให้ระบบทำงานได้ถูกต้อง
-    const API_URL = "https://script.google.com/macros/s/AKfycbzLYyET_1nSFGAZr-PHXQMMupaT8w6dvleZaFip3_6zI03qkQ1ePCvDiLdd0ZD8ULY1/exec";
+  /* =============================================
+     MOCK DATA – เปลี่ยนเป็น API call จริงได้เลย
+     ============================================= */
+  const mockData = {
+    'TK-0001': {
+      subject: 'ออกใบกำกับภาษีไม่ได้',
+      requester: 'สมชาย ใจดี',
+      dept: 'สาขาสีลม',
+      priority: 'สูง',
+      statusLabel: 'กำลังดำเนินการ',
+      badgeClass: 'badge-inprogress',
+      created: '14 พ.ค. 2567, 09:30',
+      updated: '17 พ.ค. 2567, 10:15',
+      timeline: [
+        { done: true,  title: 'รับเรื่องแล้ว',          desc: '14 พ.ค. 2567, 09:35 – ทีม e-TAX รับเคสเรียบร้อย' },
+        { done: true,  title: 'กำลังตรวจสอบ',           desc: '15 พ.ค. 2567, 14:00 – ทีมเทคนิคตรวจสอบระบบ' },
+        { done: false, title: 'กำลังแก้ไข',              desc: 'รอดำเนินการ' },
+        { done: false, title: 'แก้ไขสำเร็จ / ปิดเคส',  desc: 'รอดำเนินการ' },
+      ]
+    },
+    'TK-0002': {
+      subject: 'ระบบ e-TAX ล็อกอินไม่ได้',
+      requester: 'วิภา รักดี',
+      dept: 'สำนักงานใหญ่',
+      priority: 'ปกติ',
+      statusLabel: 'แก้ไขสำเร็จ',
+      badgeClass: 'badge-resolved',
+      created: '10 พ.ค. 2567, 13:00',
+      updated: '13 พ.ค. 2567, 16:40',
+      timeline: [
+        { done: true, title: 'รับเรื่องแล้ว',          desc: '10 พ.ค. 2567, 13:10 – ทีม e-TAX รับเคสเรียบร้อย' },
+        { done: true, title: 'กำลังตรวจสอบ',           desc: '11 พ.ค. 2567, 09:00 – ตรวจพบปัญหา password หมดอายุ' },
+        { done: true, title: 'กำลังแก้ไข',              desc: '12 พ.ค. 2567, 11:30 – รีเซ็ตรหัสผ่านและทดสอบ' },
+        { done: true, title: 'แก้ไขสำเร็จ / ปิดเคส',  desc: '13 พ.ค. 2567, 16:40 – ปิดเคสเรียบร้อย' },
+      ]
+    }
+  };
 
-    async function checkStatus() {
-        const ticketInput = document.getElementById('ticketInput');
-        const resultDiv = document.getElementById('result');
-        const ticketNo = ticketInput.value.trim();
+  /* =============================================
+     SEARCH FUNCTION
+     หากต้องการเชื่อม API จริง ให้แทน mockData[ticketId]
+     ด้วย fetch('/api/tickets/' + ticketId).then(r => r.json())
+     ============================================= */
+  async function searchTicket() {
+    const ticketId = document.getElementById('ticket-input').value.trim().toUpperCase();
+    const errEl    = document.getElementById('err-msg');
+    const resultCard = document.getElementById('result-card');
 
-        if (!ticketNo) {
-            showResult("กรุณากรอกหมายเลข Ticket", "error");
-            return;
-        }
+    errEl.classList.remove('visible');
+    resultCard.classList.remove('visible');
 
-        // แสดงสถานะกำลังโหลด
-        resultDiv.innerHTML = '<span class="loading">กำลังค้นหาข้อมูล...</span>';
-        resultDiv.className = "";
-        resultDiv.style.display = "block";
-
-        try {
-            // เรียกข้อมูลจาก Google Sheets API
-            const response = await fetch(`${API_URL}?ticket=${encodeURIComponent(ticketNo)}`);
-            const data = await response.json();
-
-            if (data.success) {
-                showResult(`<strong>เลข Ticket:</strong> ${ticketNo}<br><strong>สถานะปัจจุบัน:</strong> ${data.status}`, "success");
-            } else {
-                showResult("ไม่พบหมายเลข Ticket นี้ในระบบ", "error");
-            }
-        } catch (error) {
-            console.error(error);
-            showResult("เกิดข้อผิดพลาดในการเชื่อมต่อ หรือ API ยังไม่ได้ Deploy แบบ Anyone", "error");
-        }
+    if (!ticketId) {
+      document.getElementById('err-text').textContent = 'กรุณากรอกเลข Ticket ก่อนตรวจสอบ';
+      errEl.classList.add('visible');
+      return;
     }
 
-    function showResult(text, type) {
-        const resultDiv = document.getElementById('result');
-        resultDiv.innerHTML = text;
-        resultDiv.className = type;
+    const data = mockData[ticketId];
+
+    if (!data) {
+      document.getElementById('err-text').textContent =
+        'ไม่พบ Ticket "' + ticketId + '" ในระบบ กรุณาตรวจสอบเลข Ticket อีกครั้ง';
+      errEl.classList.add('visible');
+      return;
     }
 
-    // รองรับการกดปุ่ม Enter ในช่องกรอกข้อมูล
-    document.getElementById('ticketInput').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            checkStatus();
-        }
-    });
+    document.getElementById('result-ticket-num').textContent = ticketId + ' – ' + data.subject;
+    document.getElementById('last-update').textContent = data.updated;
+
+    document.getElementById('meta-grid').innerHTML = `
+      <div class="bata-meta-item">
+        <div class="bata-meta-label">สถานะ</div>
+        <div class="bata-meta-value">
+          <span class="bata-status-badge ${data.badgeClass}">${data.statusLabel}</span>
+        </div>
+      </div>
+      <div class="bata-meta-item">
+        <div class="bata-meta-label">ความสำคัญ</div>
+        <div class="bata-meta-value">${data.priority}</div>
+      </div>
+      <div class="bata-meta-item">
+        <div class="bata-meta-label">ผู้แจ้ง</div>
+        <div class="bata-meta-value">${data.requester}</div>
+      </div>
+      <div class="bata-meta-item">
+        <div class="bata-meta-label">หน่วยงาน</div>
+        <div class="bata-meta-value">${data.dept}</div>
+      </div>
+      <div class="bata-meta-item">
+        <div class="bata-meta-label">วันที่แจ้ง</div>
+        <div class="bata-meta-value">${data.created}</div>
+      </div>
+      <div class="bata-meta-item">
+        <div class="bata-meta-label">อัปเดตล่าสุด</div>
+        <div class="bata-meta-value">${data.updated}</div>
+      </div>
+    `;
+
+    document.getElementById('timeline-area').innerHTML = data.timeline.map(t => `
+      <div class="bata-tl-item">
+        <div class="bata-tl-dot ${t.done ? 'done' : ''}"></div>
+        <div class="bata-tl-title" style="color:${t.done ? '#1a1a1a' : '#ccc'}">${t.title}</div>
+        <div class="bata-tl-desc">${t.desc}</div>
+      </div>
+    `).join('');
+
+    resultCard.classList.add('visible');
+    resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  document.getElementById('ticket-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') searchTicket();
+  });
 </script>
-
 </body>
 </html>
