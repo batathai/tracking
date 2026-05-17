@@ -430,7 +430,6 @@
 <footer>© 2025 Bata Thailand · ทีม e-Tax Support</footer>
 
 <script>
-  // ⚠️ ใส่ URL ของ Apps Script Web App ที่นี่
   var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzL-qfS4NyFBidwDfano1KEyV3xcHKaKhCvjTLaYVRIvvNBYSVRrVwlazIo-1_uCnv9/exec";
 
   function handleFile(input) {
@@ -537,6 +536,14 @@
     });
     document.getElementById("consent").checked = false;
     document.getElementById("file-name").textContent = "";
+
+    var btn = document.getElementById("submit-btn");
+    var spinner = document.getElementById("spinner");
+    var btnText = document.getElementById("btn-text");
+    if (btn) btn.disabled = false;
+    if (spinner) spinner.style.display = "none";
+    if (btnText) btnText.textContent = "ส่งแบบฟอร์ม / Submit";
+
     window.scrollTo({top: 0, behavior: "smooth"});
   }
 </script>
