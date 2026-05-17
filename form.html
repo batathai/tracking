@@ -509,24 +509,42 @@
       timestamp: new Date().toLocaleString("th-TH", {timeZone: "Asia/Bangkok"})
     };
 
+    // === เปลี่ยนวิธีส่งข้อมูลเป็น FormData เพื่อให้ดึงเลข Ticket จริงกลับมาโชว์ได้ ===
+    var formData = new FormData();
+    for (var key in payload) {
+      formData.append(key, payload[key]);
+    }
+
     fetch(SCRIPT_URL, {
       method: "POST",
-      body: JSON.stringify(payload)
+      body: formData // ส่งแบบ Form Data แทน JSON string
     })
-    .then(function(res) { return res.json(); })
+    .then(function(res) { 
+      return res.json(); 
+    })
     .then(function(data) {
       if (data.success) {
+        // นำเลข Ticket จริงที่รันจาก Google Sheet มาแสดงผลบนหน้าจอ
         document.getElementById("ticket-display").textContent = data.ticketNo;
+        
+        // สลับหน้าจอไปที่หน้าสำเร็จ
         document.getElementById("form-section").style.display = "none";
         document.getElementById("success-screen").style.display = "block";
         window.scrollTo({top: 0, behavior: "smooth"});
       } else {
-        alert("เกิดข้อผิดพลาด: " + (data.error || "ลองใหม่อีกครั้ง"));
+        alert("เกิดข้อผิดพลาดจากระบบ: " + (data.error || "ลองใหม่อีกครั้ง"));
         btn.disabled = false;
         spinner.style.display = "none";
         btnText.textContent = "ส่งแบบฟอร์ม / Submit";
       }
     })
+    .catch(function(error) {
+      console.error("Error:", error);
+      alert("ไม่สามารถเชื่อมต่อระบบได้ กรุณาตรวจสอบการเชื่อมต่อแล้วลองใหม่อีกครั้ง");
+      btn.disabled = false;
+      spinner.style.display = "none";
+      btnText.textContent = "ส่งแบบฟอร์ม / Submit";
+    });
     .catch(function() {
       alert("ไม่สามารถเชื่อมต่อได้ กรุณาลองใหม่อีกครั้ง");
       btn.disabled = false;
