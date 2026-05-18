@@ -338,8 +338,6 @@ tbody td{padding:11px 14px;vertical-align:middle}
 </div>
 
 <script>
-// ── ACCOUNTS ─────────────────────────────────────────
-// รหัสผ่านหลัก (แก้ได้ตรงนี้)
 const ADMIN_MAP = {
   "bata212224": { name:"Bata Admin",    team:"Bata Team",      perm:"admin"       },
   "bay313326":  { name:"Bay e-Tax",     team:"Bay e-Tax Team", perm:"edit_status" }
@@ -362,15 +360,10 @@ const CAN_ADMIN  = u => u?.perm === "admin";
 
 // ── HASH-BASED ACCESS ────────────────────────────────
 function checkAccess() {
-  const hash = window.location.hash;
-  const lock = document.getElementById("lock");
-  if (hash === "#admin" || hash === "#bata" || hash === "#bay") {
-    lock.style.display = "flex";
-    setTimeout(() => document.getElementById("l-pass").focus(), 100);
-  } else {
-    lock.style.display = "none";
-    document.getElementById("app").style.display = "none";
-  }
+  // แสดงหน้า login ทันทีตอนเปิดหน้า
+  document.getElementById("lock").style.display = "flex";
+  document.getElementById("app").style.display  = "none";
+  setTimeout(() => document.getElementById("l-pass").focus(), 100);
 }
 
 // ตรวจสอบตอนโหลด
@@ -688,6 +681,23 @@ async function saveTicket() {
 // ── UTILS ─────────────────────────────────────────────
 function esc(s) { return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 function fmtDate(s) { if(!s)return"—"; const d=new Date(s); return isNaN(d)?s:d.toLocaleDateString("th-TH",{year:"numeric",month:"short",day:"numeric"}); }
+
+// ── F9 to open lock screen ────────────────────────────
+document.addEventListener("keydown", function(e) {
+  if (e.key === "F9") {
+    e.preventDefault();
+    const lock = document.getElementById("lock");
+    const app  = document.getElementById("app");
+    if (app.style.display === "block") {
+      // ถ้า login อยู่แล้ว → ล็อก
+      doLock();
+    } else {
+      // ถ้ายังไม่ login → เปิดหน้า login
+      lock.style.display = "flex";
+      setTimeout(() => document.getElementById("l-pass").focus(), 100);
+    }
+  }
+});
 </script>
 </body>
 </html>
