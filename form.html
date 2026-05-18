@@ -368,14 +368,17 @@
       </div>
 
       <div class="field">
-        <label>แนบใบเสร็จ / หลักฐาน <span class="en">Upload Receipt</span></label>
-        <label class="file-upload" for="file-upload">
+        <label>แนบใบเสร็จ / หลักฐาน <span class="en">Upload Receipt</span><span class="req">*</span></label>
+        
+        <label class="file-upload" for="file-upload" id="file-upload-label">
           <input type="file" id="file-upload" accept="image/*,.pdf" onchange="handleFile(this)" />
           <div class="file-upload-icon">📎</div>
           <div class="file-upload-text">คลิกเพื่อแนบไฟล์</div>
           <div class="file-upload-hint">รองรับ JPG, PNG, PDF (ไม่เกิน 5MB)</div>
           <div class="file-name" id="file-name"></div>
         </label>
+        
+        <div class="error-msg" id="err-file-upload">กรุณาแนบใบเสร็จ หรือ หลักฐานการซื้อสินค้า / Please upload your receipt</div>
       </div>
     </div>
 
@@ -493,7 +496,11 @@
     var issueType = document.getElementById("issue-type").value;
     var consent = document.getElementById("consent").checked;
 
+    var fileInput = document.getElementById("file-upload");
+    var hasFile = fileInput && fileInput.files.length > 0;
+
     var valid = true;
+    
     showError("fullname", !fullname); if (!fullname) valid = false;
     showError("phone", !phone); if (!phone) valid = false;
     showError("email", !validateEmail(email)); if (!validateEmail(email)) valid = false;
@@ -501,11 +508,16 @@
     showError("branch", !branch); if (!branch) valid = false;
     showError("receipt", !receipt); if (!receipt) valid = false;
     showError("issue-type", !issueType); if (!issueType) valid = false;
+    
+    showError("file-upload", !hasFile); if (!hasFile) valid = false;
 
     var consentErr = document.getElementById("err-consent");
-    if (!consent) { consentErr.style.display = "block"; valid = false; }
-    else { consentErr.style.display = "none"; }
-
+    if (!consent) { 
+      if (consentErr) consentErr.style.display = "block"; 
+      valid = false; 
+    } else { 
+      if (consentErr) consentErr.style.display = "none"; 
+    }
     if (!valid) { window.scrollTo({top: 0, behavior: "smooth"}); return; }
 
     var btn = document.getElementById("submit-btn");
