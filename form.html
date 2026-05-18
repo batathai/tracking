@@ -379,17 +379,15 @@
       </div>
     </div>
 
-    <div class="form-card">
+<div class="form-card">
       <div class="section-title">การยินยอม / Consent</div>
-      <div class="consent-box">
-        ข้าพเจ้ายินยอมให้ Bata Thailand เก็บรวบรวมและใช้ข้อมูลส่วนบุคคลที่ให้ไว้ในแบบฟอร์มนี้ เพื่อวัตถุประสงค์ในการดำเนินการเกี่ยวกับใบกำกับภาษีอิเล็กทรอนิกส์เท่านั้น<br><br>
-        I consent to Bata Thailand collecting and using the personal data provided in this form solely for the purpose of processing e-Tax related requests.
-      </div>
       <div class="checkbox-row">
         <input type="checkbox" id="consent" />
-        <label for="consent">ฉันยินยอมตามเงื่อนไขข้างต้น / I agree to the above terms <span style="color:var(--red)">*</span></label>
+        <label for="consent">
+          ฉันยอมรับ <a href="#" id="open-consent-btn" style="color:var(--red); text-decoration:underline; font-weight:500;">เงื่อนไขการเก็บรวบรวมข้อมูลส่วนบุคคล</a> / I agree to the <a href="#" id="open-consent-btn-en" style="color:var(--red); text-decoration:underline; font-weight:500;">Privacy Terms</a> <span style="color:var(--red)">*</span>
+        </label>
       </div>
-      <div class="error-msg" id="err-consent">กรุณายืนยันการยินยอม</div>
+      <div class="error-msg" id="err-consent">กรุณายอมรับเงื่อนไขเพื่อดำเนินการต่อ / Kindly accept the terms to proceed</div>
     </div>
 
     <button class="submit-btn" id="submit-btn" onclick="submitForm()">
@@ -397,7 +395,47 @@
       <span id="btn-text">ส่งแบบฟอร์ม / Submit</span>
       <div class="spinner" id="spinner"></div>
     </button>
+    </div> <div id="consent-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; align-items:center; justify-content:center; padding:1rem;">
+    <div style="background:var(--white); max-width:600px; width:100%; border-radius:var(--radius-lg); padding:1.75rem; max-height:85vh; display:flex; flex-direction:column; box-shadow:0 12px 30px rgba(0,0,0,0.2);">
+      
+      <div style="font-weight:700; font-size:16px; margin-bottom:1rem; border-bottom:1px solid var(--gray-200); padding-bottom:0.75rem; color:var(--gray-900);">
+        ข้อตกลงและเงื่อนไข / Terms & Conditions
+      </div>
+      
+      <div style="overflow-y:auto; font-size:13px; color:var(--gray-600); line-height:1.6; padding-right:8px; margin-bottom:1.5rem;">
+        
+        <div style="margin-bottom: 1.5rem;">
+          <p style="font-weight: 600; color: var(--gray-900); margin-bottom: 8px;">กรุณายอมรับเงื่อนไขเพื่อดำเนินการต่อ</p>
+          <p style="margin-bottom: 8px;">ข้าพเจ้าเข้าใจและยินยอมที่จะใช้บริการนี้ในฐานะส่วนบุคคล โดยข้อมูลที่ได้ให้มานั้นถูกต้องครบถ้วนตามความเป็นจริง ทุกประการ</p>
+          <p style="margin-bottom: 4px;">เพื่อวัตถุประสงค์ในการใช้บริการขอใบกำกับภาษีอิเล็กทรอนิกส์ และ / หรือ การขอคืนภาษีมูลค่าเพิ่มโดยวิธีการ ทางอิเล็กทรอนิกส์ ข้าพเจ้ายินยอมให้:</p>
+          <ul style="margin-left: 20px; margin-bottom: 8px;">
+            <li>(1) BATA (THAILAND) LIMITED ดำเนินการรวบรวม ประมวลผล และ / หรือ จัดเก็บข้อมูลส่วนบุคคลของข้าพเจ้า; และ</li>
+            <li>(2) แบ่งปันข้อมูลส่วนบุคคลของ ข้าพเจ้ากับผู้ให้บริการ BATA (THAILAND) LIMITED และผู้ให้บริการ (หรือผู้รับเหมาช่วงของ ผู้ให้บริการ) ที่เกี่ยวข้องกับการดำเนินการขอรับใบกำกับภาษีอิเล็กทรอนิกส์ และ / หรือ การขอคืนภาษีมูลค่าเพิ่มโดยวิธีการทางอิเล็กทรอนิกส์</li>
+          </ul>
+          <p style="margin-bottom: 4px;">ข้าพเจ้าได้อ่านและยอมรับ BATA (THAILAND) LIMITED นโยบายความเป็นส่วนตัว</p>
+          <p style="font-size: 11.5px; color: var(--gray-400);">การขอใบกำกับภาษีอิเล็กทรอนิกส์และ/ หรือการขอคืนภาษีมูลค่าเพิ่ม ให้บริการโดยบริษัท ฟินเน็ต เวนเจอร์ส จำกัด และ / หรือ บริษัท เน็ตเบย์ จำกัด (มหาชน)</p>
+        </div>
 
+        <hr style="border: 0; border-top: 1px dashed var(--gray-200); margin-bottom: 1.5rem;">
+
+        <div>
+          <p style="font-weight: 600; color: var(--gray-900); margin-bottom: 8px;">Kindly accept the terms to proceed</p>
+          <p style="margin-bottom: 8px;">I understand and agree that I am using this service in my personal capacity and all the information provided by me shall be true and accurate.</p>
+          <p style="margin-bottom: 4px;">For the sole purpose of this E-Tax and /or VAT Refund services, I consent to:</p>
+          <ul style="margin-left: 20px; margin-bottom: 8px;">
+            <li>(1) BATA (THAILAND) LIMITED the collection, processing and/or storage of my personal data by; and</li>
+            <li>(2) the sharing of my personal data between BATA (THAILAND) LIMITED and its service provider (or any of such service provider's sub-contractors) providing this E-Tax and / or VAT Refund services.</li>
+          </ul>
+          <p style="margin-bottom: 4px;">I have read and agreed to BATA (THAILAND) LIMITED privacy policy.</p>
+          <p style="font-size: 11.5px; color: var(--gray-400);">This E-Tax and / or VAT Refund Service is enabled by Fynnet Ventures Co., Ltd and/or Netbay Public Company Limited.</p>
+        </div>
+
+      </div>
+      
+      <button type="button" id="close-consent-btn" class="btn-red" style="width:100%; justify-content:center; padding:12px; font-weight:600; border-radius:var(--radius-sm);">
+        รับทราบและปิด / Close
+      </button>
+    </div>
   </div>
 
   <div id="success-screen">
