@@ -526,7 +526,7 @@
       fullname: fullname,
       phone: phone,
       email: email,
-      taxid: document.getElementById("taxid").value.trim(),
+      taxid: "",
       purchaseDate: purchaseDate,
       branch: branch,
       receipt: receipt,
@@ -569,7 +569,7 @@
   function resetForm() {
     document.getElementById("form-section").style.display = "block";
     document.getElementById("success-screen").style.display = "none";
-    ["fullname","phone","email","taxid","purchase-date","branch","receipt","issue-type","detail"].forEach(function(id) {
+    ["fullname","phone","email","purchase-date","branch","receipt","issue-type","detail"].forEach(function(id) {
       var el = document.getElementById(id);
       if (el) el.value = "";
     });
