@@ -167,7 +167,7 @@ tbody td{padding:11px 14px;vertical-align:middle}
     <div class="lock-field">
       <label>รหัสผ่านผู้ดูแลระบบ</label>
       <input class="lock-input" id="l-pass" type="password" placeholder="••••••••"
-        onkeydown="if(event.key='Enter') tryLogin()" autocomplete="off" />
+        onkeydown="if(event.key==='Enter') tryLogin()" />
     </div>
     <button class="lock-btn" onclick="tryLogin()">เข้าสู่ระบบ</button>
     <div class="lock-error" id="l-error"></div>
