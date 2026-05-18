@@ -34,36 +34,57 @@ body {
   min-height: 100vh;
 }
 
-/* ── TOPBAR ── */
-.topbar {
-  background: var(--red);
-  height: 56px;
+/* ── HEADER (เหมือน index.html) ── */
+header {
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  padding: 0 2rem;
+  height: 64px;
   display: flex;
   align-items: center;
-  padding: 0 1.5rem;
-  gap: 12px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  justify-content: space-between;
   position: sticky;
   top: 0;
   z-index: 100;
 }
-.logo-box {
-  background: var(--white);
-  color: var(--red);
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+.logo-b {
+  background: var(--red);
+  color: var(--white);
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
   font-weight: 700;
-  font-size: 11px;
-  padding: 5px 8px;
-  border-radius: 4px;
-  line-height: 1.3;
-  letter-spacing: 0.5px;
   flex-shrink: 0;
 }
-.topbar-right {
-  margin-left: auto;
-  font-size: 12px;
-  color: rgba(255,255,255,0.7);
-  letter-spacing: 1px;
-  text-transform: uppercase;
+.logo-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--gray-900);
+  line-height: 1.1;
+}
+.logo-dept {
+  font-size: 11.5px;
+  color: var(--gray-400);
+  font-weight: 400;
+}
+.header-badge {
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 11.5px;
+  color: var(--gray-600);
+  font-weight: 500;
+  letter-spacing: 0.03em;
 }
 
 /* ── LAYOUT ── */
@@ -73,7 +94,7 @@ body {
   padding: 2.5rem 1.25rem 4rem;
 }
 
-/* ── HEADER ── */
+/* ── PAGE HEADER ── */
 .page-eyebrow {
   font-size: 28px;
   letter-spacing: 2.5px;
@@ -96,7 +117,6 @@ body {
   margin-bottom: 2rem;
 }
 
-/* ── CONFIG SECTION ── */
 /* ── SEARCH BOX ── */
 .search-wrap {
   display: flex;
@@ -188,7 +208,6 @@ body {
   justify-content: space-between;
   align-items: flex-start;
 }
-.card-head-left {}
 .card-head-eyebrow {
   font-size: 10px;
   letter-spacing: 2px;
@@ -252,7 +271,7 @@ body {
 
 /* remark */
 .remark-row {
-  margin: 0 1.5rem;
+  margin: 1.25rem 1.5rem 0;
   padding: 10px 14px;
   background: var(--gray-50);
   border-radius: var(--radius-sm);
@@ -260,7 +279,6 @@ body {
   font-size: 13px;
   color: var(--gray-600);
   line-height: 1.6;
-  margin-top: 1.25rem;
 }
 
 /* timeline */
@@ -275,7 +293,6 @@ body {
   font-weight: 600;
   margin-bottom: 1.25rem;
 }
-.timeline {}
 .t-step { display: flex; gap: 14px; }
 .t-left {
   display: flex;
@@ -295,10 +312,7 @@ body {
   position: relative;
   z-index: 1;
 }
-.t-dot.done {
-  background: var(--red);
-  border-color: var(--red);
-}
+.t-dot.done { background: var(--red); border-color: var(--red); }
 .t-dot.active {
   border-color: var(--red);
   background: var(--white);
@@ -330,8 +344,6 @@ body {
 .t-name.active { color: var(--red); }
 .t-desc { font-size: 12px; color: var(--gray-400); margin-top: 4px; line-height: 1.5; }
 .t-desc.active { color: var(--gray-500); }
-
-/* active pulse dot */
 .t-dot.active::after {
   content: '';
   position: absolute;
@@ -354,19 +366,30 @@ body {
   line-height: 1.6;
 }
 .footer-note a { color: var(--red); text-decoration: none; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 560px) {
+  header { padding: 0 1.25rem; }
+  .header-badge { display: none; }
+}
 </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
-<div class="topbar">
-  <div class="logo-box">BATA<br>THAILAND</div>
-  <div class="topbar-right">e‑Tax Support</div>
-</div>
+<!-- HEADER -->
+<header>
+  <div class="logo-wrap">
+    <div class="logo-b">B</div>
+    <div>
+      <div class="logo-name">Bata Thailand</div>
+      <div class="logo-dept">e-Tax Support</div>
+    </div>
+  </div>
+  <div class="header-badge">Case Tracking</div>
+</header>
 
 <div class="page-wrap">
 
-  <!-- PAGE HEADER -->
   <div class="page-eyebrow">ระบบติดตามเคส</div>
   <h1 class="page-title">ตรวจสอบสถานะ<br>การแจ้งปัญหา</h1>
   <p class="page-sub">
@@ -374,7 +397,6 @@ body {
     เพื่อดูความคืบหน้าของเคสแบบ Real-time
   </p>
 
-  <!-- SEARCH -->
   <div class="search-wrap">
     <input
       class="ticket-input"
@@ -393,7 +415,6 @@ body {
     </button>
   </div>
 
-  <!-- ERROR -->
   <div class="error-box" id="error-box">
     <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="flex-shrink:0">
       <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
@@ -401,24 +422,19 @@ body {
     <span id="error-msg"></span>
   </div>
 
-  <!-- LOADING -->
   <div class="state-box" id="state-loading">
     <div class="state-icon">⏳</div>
     <div class="state-title">กำลังดึงข้อมูล...</div>
     <div>กรุณารอสักครู่</div>
   </div>
 
-  <!-- NOT FOUND -->
   <div class="state-box" id="state-notfound">
     <div class="state-icon">🔍</div>
     <div class="state-title">ไม่พบหมายเลข Ticket นี้</div>
     <div>กรุณาตรวจสอบหมายเลขอีกครั้ง หรือติดต่อทีมงาน</div>
   </div>
 
-  <!-- RESULT CARD -->
   <div class="result-card" id="result-card">
-
-    <!-- Header -->
     <div class="card-head">
       <div class="card-head-left">
         <div class="card-head-eyebrow">Ticket Number</div>
@@ -430,7 +446,6 @@ body {
       </div>
     </div>
 
-    <!-- Estimated date row (conditional) -->
     <div class="est-row" id="r-est-row" style="display:none">
       <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="#92400e" stroke-width="2">
         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
@@ -440,7 +455,6 @@ body {
       คาดว่าจะแล้วเสร็จภายใน: <strong id="r-est"></strong>
     </div>
 
-    <!-- Meta info -->
     <div class="card-meta">
       <div class="meta-item">
         <div class="lbl">ชื่อลูกค้า</div>
@@ -460,30 +474,25 @@ body {
       </div>
     </div>
 
-    <!-- Remark (conditional) -->
     <div class="remark-row" id="r-remark-row" style="display:none">
       <strong style="color:var(--gray-800)">หมายเหตุจากทีมงาน:</strong>
       <span id="r-remark"></span>
     </div>
 
-    <!-- Timeline -->
     <div class="timeline-wrap">
       <div class="timeline-title">ความคืบหน้า</div>
       <div class="timeline" id="timeline"></div>
     </div>
-
   </div>
 
-  <!-- FOOTER -->
   <div class="footer-note" id="footer-note" style="display:none">
     มีข้อสงสัย? ติดต่อทีมงานที่
     <a href="mailto:etax@bata.co.th">etax@bata.co.th</a>
   </div>
 
-</div><!-- /page-wrap -->
+</div>
 
 <script>
-// ── CONFIG ──────────────────────────────────────────────
 const STEPS = [
   {
     key: 'รับเรื่องแล้ว',
@@ -527,13 +536,9 @@ const STEPS = [
   },
 ];
 
-// ── CONFIG ───────────────────────────────────────────────
-// *** วาง Google Apps Script URL ของคุณตรงนี้ ***
 const GAS_URL = 'https://script.google.com/macros/s/AKfycby1LF0cHgvLEOcXJfan4eMLSdmLBzw8LU7TGaLVVJWt2puYs0IIVX78ml_Q792YPL5i/exec';
 
-// ── INIT ─────────────────────────────────────────────────
 window.addEventListener('load', () => {
-  // auto-fill from URL param ?ticket=BATA-ETAX-00001
   const params = new URLSearchParams(location.search);
   const t = params.get('ticket');
   if (t) {
@@ -542,11 +547,6 @@ window.addEventListener('load', () => {
   }
 });
 
-function getGasUrl() {
-  return GAS_URL;
-}
-
-// ── UI HELPERS ───────────────────────────────────────────
 function showError(msg) {
   document.getElementById('error-msg').textContent = msg;
   document.getElementById('error-box').classList.add('show');
@@ -567,18 +567,9 @@ function formatDate(str) {
   return d.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
-// ── SEARCH ───────────────────────────────────────────────
 async function doSearch() {
   const raw = document.getElementById('ticket-input').value.trim().toUpperCase();
   if (!raw) { showError('กรุณากรอกหมายเลข Ticket'); return; }
-
-  const gasUrl = getGasUrl();
-  if (!gasUrl) {
-    showError('กรุณาตั้งค่า Google Apps Script URL ก่อน');
-    document.getElementById('cfg-panel').classList.add('open');
-    document.getElementById('cfg-toggle').classList.add('open');
-    return;
-  }
 
   hideError();
   document.getElementById('result-card').classList.remove('show');
@@ -587,7 +578,7 @@ async function doSearch() {
   document.getElementById('search-btn').disabled = true;
 
   try {
-    const res = await fetch(`${gasUrl}?ticketNo=${encodeURIComponent(raw)}`);
+    const res = await fetch(`${GAS_URL}?ticketNo=${encodeURIComponent(raw)}`);
     if (!res.ok) throw new Error(`Server error: ${res.status}`);
     const data = await res.json();
 
@@ -598,20 +589,17 @@ async function doSearch() {
       return;
     }
 
-    // Map Apps Script fields → display fields
-    const mapped = {
-      ticket_id:     data.ticketNo,
-      customer_name: data.fullname,
-      issue_type:    data.issueType,
-      branch:        data.branch || '—',
-      status:        data.status,
-      created_date:  data.timestamp,
-      updated_date:  data.timestamp,
+    renderResult({
+      ticket_id:      data.ticketNo,
+      customer_name:  data.fullname,
+      issue_type:     data.issueType,
+      branch:         data.branch || '—',
+      status:         data.status,
+      created_date:   data.timestamp,
+      updated_date:   data.timestamp,
       estimated_date: data.estimatedDate || '',
-      remark:        data.remark || '',
-    };
-
-    renderResult(mapped);
+      remark:         data.remark || '',
+    });
 
   } catch (e) {
     showState(null);
@@ -621,16 +609,14 @@ async function doSearch() {
   }
 }
 
-// ── RENDER ───────────────────────────────────────────────
 function renderResult(d) {
-  document.getElementById('r-id').textContent       = d.ticket_id || '—';
-  document.getElementById('r-name').textContent     = d.customer_name || '—';
-  document.getElementById('r-issue').textContent    = d.issue_type || '—';
-  document.getElementById('r-branch').textContent   = d.branch || '—';
-  document.getElementById('r-created').textContent  = formatDate(d.created_date);
-  document.getElementById('r-updated').textContent  = d.updated_date ? formatDate(d.updated_date) : '—';
+  document.getElementById('r-id').textContent      = d.ticket_id || '—';
+  document.getElementById('r-name').textContent    = d.customer_name || '—';
+  document.getElementById('r-issue').textContent   = d.issue_type || '—';
+  document.getElementById('r-branch').textContent  = d.branch || '—';
+  document.getElementById('r-created').textContent = formatDate(d.created_date);
+  document.getElementById('r-updated').textContent = d.updated_date ? formatDate(d.updated_date) : '—';
 
-  // estimated date
   const estRow = document.getElementById('r-est-row');
   if (d.estimated_date) {
     document.getElementById('r-est').textContent = formatDate(d.estimated_date);
@@ -639,7 +625,6 @@ function renderResult(d) {
     estRow.style.display = 'none';
   }
 
-  // remark
   const remarkRow = document.getElementById('r-remark-row');
   if (d.remark) {
     document.getElementById('r-remark').textContent = d.remark;
@@ -649,7 +634,6 @@ function renderResult(d) {
   }
 
   renderTimeline(d.status || '');
-
   document.getElementById('result-card').classList.add('show');
   document.getElementById('footer-note').style.display = 'block';
 }
@@ -662,13 +646,11 @@ function renderTimeline(status) {
   STEPS.forEach((step, i) => {
     const isDone   = i < activeIdx;
     const isActive = i === activeIdx;
-    const isPending = i > activeIdx;
     const isLast   = i === STEPS.length - 1;
 
     const stepEl = document.createElement('div');
     stepEl.className = 't-step';
 
-    // left column
     const left = document.createElement('div');
     left.className = 't-left';
 
@@ -683,7 +665,6 @@ function renderTimeline(status) {
       left.appendChild(line);
     }
 
-    // content
     const content = document.createElement('div');
     content.className = 't-content';
 
@@ -703,70 +684,6 @@ function renderTimeline(status) {
   });
 }
 </script>
-
-<!--
-══════════════════════════════════════════════════════════════
-  GOOGLE APPS SCRIPT — วาง code นี้ใน Apps Script แล้ว Deploy
-  เป็น Web App (Execute as: Me, Who has access: Anyone)
-══════════════════════════════════════════════════════════════
-
-function doGet(e) {
-  const SHEET_ID   = 'YOUR_GOOGLE_SHEET_ID';
-  const SHEET_NAME = 'Tickets';  // ชื่อ Tab ของ Sheet
-
-  // Map ตำแหน่ง column (0 = A, 1 = B, ...)
-  const COL = {
-    ticket_id:      13,  // N
-    customer_name:   2,  // C
-    issue_type:      9,  // J
-    branch:          7,  // H
-    status:         14,  // O
-    created_date:    0,  // A (ประทับเวลา)
-    updated_date:   16,  // Q
-    estimated_date: 17,  // R
-    remark:         18,  // S
-  };
-
-  const ticketId = (e.parameter.ticket || '').toUpperCase().trim();
-  const output   = ContentService.createTextOutput();
-  output.setMimeType(ContentService.MimeType.JSON);
-
-  const headers = {
-    'Access-Control-Allow-Origin': '*'
-  };
-
-  try {
-    const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
-    const rows  = sheet.getDataRange().getValues();
-
-    const found = rows.slice(1).find(r =>
-      String(r[COL.ticket_id]).toUpperCase().trim() === ticketId
-    );
-
-    if (!found) {
-      output.setContent(JSON.stringify({ error: 'NOT_FOUND' }));
-    } else {
-      output.setContent(JSON.stringify({
-        ticket_id:      found[COL.ticket_id],
-        customer_name:  found[COL.customer_name],
-        issue_type:     found[COL.issue_type],
-        branch:         found[COL.branch],
-        status:         found[COL.status],
-        created_date:   found[COL.created_date],
-        updated_date:   found[COL.updated_date],
-        estimated_date: found[COL.estimated_date],
-        remark:         found[COL.remark],
-      }));
-    }
-  } catch(err) {
-    output.setContent(JSON.stringify({ error: err.message }));
-  }
-
-  return output;
-}
-
-══════════════════════════════════════════════════════════════
--->
 
 </body>
 </html>
