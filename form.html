@@ -578,6 +578,26 @@
 
     window.scrollTo({top: 0, behavior: "smooth"});
   }
+
+  // === ระบบเปิด-ปิดหน้าต่างป๊อปอัป Consent Modal ===
+  var modal = document.getElementById("consent-modal");
+  var openBtnTh = document.getElementById("open-consent-btn");
+  var openBtnEn = document.getElementById("open-consent-btn-en");
+  var closeBtn = document.getElementById("close-consent-btn");
+
+  function openModal(e) {
+    e.preventDefault(); // ป้องกันไม่ให้หน้าต่างกระโดดเมื่อกดลิงก์ #
+    modal.style.display = "flex";
+  }
+  
+  if(openBtnTh) openBtnTh.addEventListener("click", openModal);
+  if(openBtnEn) openBtnEn.addEventListener("click", openModal);
+  if(closeBtn) closeBtn.addEventListener("click", function() { modal.style.display = "none"; });
+  
+  // เพิ่มเติม: ถ้าคลิกพื้นที่สีดำรอบๆ กล่องป๊อปอัป ให้ปิดหน้าต่างได้เช่นกัน
+  window.addEventListener("click", function(e) {
+    if (e.target == modal) { modal.style.display = "none"; }
+  });
 </script>
 </body>
 </html>
