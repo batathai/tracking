@@ -276,9 +276,14 @@ tbody td{padding:11px 14px;vertical-align:middle}
         <div class="d-row"><span class="d-lbl">ประเภท</span><span class="d-val" id="d-issue">—</span></div>
         <div class="d-row"><span class="d-lbl">รายละเอียด</span><span class="d-val" id="d-detail" style="font-size:12px;color:var(--g600)">—</span></div>
         <div class="d-row">
-        <div class="d-lbl">แนบใบเสร็จ</div>
-          <div class="d-val" id="receipt-container">
-          <span class="d-img-none">กำลังโหลดข้อมูล...</span>
+        <div class="d-row">
+        <div class="d-lbl">ใบเสร็จ</div>
+        <div class="d-val" id="d-receipt">—</div> </div>
+
+        <div class="d-row">
+          <div class="d-lbl">แนบใบเสร็จ</div>
+          <div class="d-val" id="d-img-wrap">
+            กำลังโหลดข้อมูล...
           </div>
         </div>
       </div>
@@ -593,51 +598,53 @@ function openDrawer(idx) {
   document.getElementById("d-phone").textContent    = t.phone||"—";
   document.getElementById("d-branch").textContent   = t.branch||"—";
   document.getElementById("d-purchase").textContent = t.purchaseDate||"—";
+  
+  // 1. ตรงช่อง "ใบเสร็จ" (เท็กซ์เลขใบเสร็จ) ให้แสดงค่าเลขใบเสร็จจริงๆ จากชีท (ไม่ใช่ลิงก์รูป)
   document.getElementById("d-receipt").textContent  = t.receipt||"—";
+  
   document.getElementById("d-issue").textContent    = t.issueType||"—";
   document.getElementById("d-detail").textContent   = t.detail||"—";
   
+  // 2. จัดการช่อง "แนบใบเสร็จ" (ตัวแปร t.fileUrl) และจัดการส่วนแสดงรูปภาพพรีวิว
   console.log("fileUrl:", t.fileUrl);
-    
-    // 1. ดึง Element ตรงช่อง "แนบใบเสร็จ" มาจัดการ
-    const receiptLabelContainer = document.getElementById("d-receipt");
-    // 2. ดึง Element ตัวแสดงรูปพรีวิวด้านล่าง (ถ้ามี)
-    const imgWrap = document.getElementById("d-img-wrap");
+  const imgWrap = document.getElementById("d-img-wrap");
 
-    if (t.fileUrl && t.fileUrl.startsWith("http")) {
-      const fileId = (t.fileUrl.match(/\/d\/([^/?]+)/) || t.fileUrl.match(/id=([^&]+)/) || [])[1] || "";
-      
-      // ใส่ลิงก์พร้อมไอคอนคลิปหนีบกระดาษ แทนที่คำว่า "กำลังโหลดข้อมูล..." ทันที
-      if (receiptLabelContainer) {
-        receiptLabelContainer.innerHTML = `
-          <a href="${t.fileUrl}" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none; font-size: 13px; font-weight: 600; color: var(--blue);">
-            <i class="fa-solid fa-paperclip" style="color: var(--red); font-size: 14px;"></i> เปิดดูรูปใบเสร็จที่แนบมา
-          </a>
+  // ตรวจสอบว่าใน t.fileUrl มีลิงก์รูปภาพส่งมาจริงหรือไม่
+  if (t.fileUrl && t.fileUrl.startsWith("http")) {
+    const fileId = (t.fileUrl.match(/\/d\/([^/?]+)/) || t.fileUrl.match(/id=([^&]+)/) || [])[1] || "";
+    
+    // พ่นไอคอนคลิปหนีบกระดาษพร้อมลิงก์เปิดแท็บใหม่ลงไปใน d-img-wrap ทันที
+    if (imgWrap) {
+      if (fileId) {
+        imgWrap.innerHTML = `
+          <div style="margin-bottom: 10px;">
+            <a href="${t.fileUrl}" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none; font-size: 13px; font-weight: 600; color: var(--blue);">
+              <i class="fa-solid fa-paperclip" style="color: var(--red); font-size: 14px;"></i> เปิดดูรูปใบเสร็จที่แนบมา
+            </a>
+          </div>
+          <img src="https://drive.google.com/thumbnail?id=${fileId}&sz=w600" 
+              alt="หลักฐาน" 
+              style="width:100%;max-height:260px;object-fit:contain;border-radius:8px;border:1px solid var(--g200);cursor:zoom-in"
+              onclick="window.open('${t.fileUrl}','_blank')">
+        `;
+      } else {
+        imgWrap.innerHTML = `
+          <div style="margin-bottom: 10px;">
+            <a href="${t.fileUrl}" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none; font-size: 13px; font-weight: 600; color: var(--blue);">
+              <i class="fa-solid fa-paperclip" style="color: var(--red); font-size: 14px;"></i> เปิดดูรูปใบเสร็จที่แนบมา
+            </a>
+          </div>
         `;
       }
-
-      // ส่วนการแสดงรูปพรีวิวด้านล่าง (ทำงานควบคู่กัน)
-      if (imgWrap) {
-        if (fileId) {
-          imgWrap.innerHTML = `
-            <img src="https://drive.google.com/thumbnail?id=${fileId}&sz=w600" 
-                alt="หลักฐาน" 
-                style="width:100%;max-height:260px;object-fit:contain;border-radius:8px;border:1px solid var(--g200);cursor:zoom-in;margin-top:8px;"
-                onclick="window.open('${t.fileUrl}','_blank')">
-          `;
-        } else {
-          imgWrap.innerHTML = ""; // ถ้าไม่มี fileId ไม่ต้องโชว์รูปพังๆ
-        }
-      }
-
-    } else {
-      // ถ้าไม่มีรูปแนบมาจากหน้าฟอร์ม ให้เปลี่ยนเป็นคำว่า ไม่มีรูปแนบ
-      if (receiptLabelContainer) {
-        receiptLabelContainer.innerHTML = `<span style="font-size:12px;color:var(--g400);font-style:italic">ไม่มีรูปแนบ</span>`;
-      }
-      if (imgWrap) imgWrap.innerHTML = "";
     }
+  } else {
+    // ถ้าไม่มีลิงก์รูปภาพส่งมา ให้เคลียร์ช่อง d-img-wrap เป็นคำว่า ไม่มีรูปแนบ
+    if (imgWrap) {
+      imgWrap.innerHTML = `<span style="font-size:12px;color:var(--g400);font-style:italic">ไม่มีรูปแนบ</span>`;
+    }
+  }
 
+  // --- โค้ดส่วนจัดการสิทธิ์และฟิลด์ฟอร์มด้านล่าง (คงเดิมไว้ตามไฟล์ของคุณ) ---
   document.getElementById("d-status").value    = t.status||"รับเรื่องแล้ว";
   document.getElementById("d-assignee").value  = t.assignee||"-";
   document.getElementById("d-est").value       = t.estimatedDate||"";
@@ -646,6 +653,7 @@ function openDrawer(idx) {
   document.getElementById("d-approve").value   = t.approvedBy||"";
   document.getElementById("save-result").textContent = "";
   document.getElementById("save-result").className   = "save-result";
+  // ... (โค้ดที่เหลือจนจบฟังก์ชัน openDrawer)
 
   const canEdit    = CAN_EDIT(currentUser);
   const canApprove = CAN_APPROVE(currentUser);
