@@ -549,8 +549,10 @@ function renderTable(tickets) {
     document.getElementById("tbl-body").innerHTML = "<tr><td colspan='7' class='empty-td'>📭 ไม่พบข้อมูล</td></tr>";
     return;
   }
+  
+  // บังคับเปลี่ยนจากส่งเลขลำดับ (Index) เป็นส่งเลขที่ตั๋ว (ticketNo) แทน เพื่อความแม่นยำ
   document.getElementById("tbl-body").innerHTML = tickets.map(t =>
-    `<tr onclick="openDrawer(${allTickets.indexOf(t)})">
+    `<tr onclick="openDrawerByNo('${esc(t.ticketNo)}')">
       <td class="td-ticket">${esc(t.ticketNo)}</td>
       <td class="td-name">${esc(t.fullname)}</td>
       <td class="td-issue">${esc(t.issueType)}</td>
@@ -560,6 +562,14 @@ function renderTable(tickets) {
       <td class="td-sm">${esc(t.assignee||"—")}</td>
     </tr>`
   ).join("");
+}
+
+// ฟังก์ชันช่วยค้นหาตั๋วที่ถูกต้อง เพื่อไม่ให้สลับแถวกันจนรูปหาย
+function openDrawerByNo(ticketNo) {
+  const idx = allTickets.findIndex(x => x.ticketNo === ticketNo);
+  if (idx !== -1) {
+    openDrawer(idx);
+  }
 }
 
 function badge(s) {
