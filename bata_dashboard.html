@@ -257,45 +257,47 @@ tbody td{padding:11px 14px;vertical-align:middle}
 </div>
 
 <!-- DRAWER -->
-    <div id="drawer-overlay" onclick="closeDrawer(event)">
-      <div class="drawer">
-        <div class="drawer-head">
-          <div><div class="drawer-eyebrow">Ticket Number</div><div class="drawer-id" id="d-id">—</div></div>
-          <button class="drawer-close" onclick="closeDrawer()">✕</button>
-        </div>
-        <div class="drawer-body">
-          <div class="d-section">
-            <div class="d-section-title">ข้อมูลลูกค้า</div>
-            <div class="d-row"><span class="d-lbl">ชื่อ</span><span class="d-val" id="d-name">—</span></div>
-            <div class="d-row"><span class="d-lbl">อีเมล</span><span class="d-val" id="d-email">—</span></div>
-            <div class="d-row"><span class="d-lbl">เบอร์โทร</span><span class="d-val" id="d-phone">—</span></div>
-            <div class="d-row"><span class="d-lbl">สาขา</span><span class="d-val" id="d-branch">—</span></div>
-            <div class="d-row"><span class="d-lbl">วันที่ซื้อ</span><span class="d-val" id="d-purchase">—</span></div>
-            <div class="d-row"><span class="d-lbl">ใบเสร็จ</span><span class="d-val" id="d-receipt">—</span></div>
-            <div class="d-row"><span class="d-lbl">ประเภท</span><span class="d-val" id="d-issue">—</span></div>
-            <div class="d-row"><span class="d-lbl">รายละเอียด</span><span class="d-val" id="d-detail" style="font-size:12px;color:var(--g600)">—</span></div>
-            <div class="d-row">
-              <span class="d-lbl">แนบใบเสร็จ</span>
-              <div class="d-val">
-                <div id="d-img-wrap"></div>
-              </div>
-            </div>
+<div id="drawer-overlay" onclick="closeDrawer(event)">
+  <div class="drawer">
+    <div class="drawer-head">
+      <div><div class="drawer-eyebrow">Ticket Number</div><div class="drawer-id" id="d-id">—</div></div>
+      <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    </div>
+    <div class="drawer-body">
+      <div class="d-section">
+        <div class="d-section-title">ข้อมูลลูกค้า</div>
+        <div class="d-row"><span class="d-lbl">ชื่อ</span><span class="d-val" id="d-name">—</span></div>
+        <div class="d-row"><span class="d-lbl">อีเมล</span><span class="d-val" id="d-email">—</span></div>
+        <div class="d-row"><span class="d-lbl">เบอร์โทร</span><span class="d-val" id="d-phone">—</span></div>
+        <div class="d-row"><span class="d-lbl">สาขา</span><span class="d-val" id="d-branch">—</span></div>
+        <div class="d-row"><span class="d-lbl">วันที่ซื้อ</span><span class="d-val" id="d-purchase">—</span></div>
+        <div class="d-row"><span class="d-lbl">ใบเสร็จ</span><span class="d-val" id="d-receipt">—</span></div>
+        <div class="d-row"><span class="d-lbl">ประเภท</span><span class="d-val" id="d-issue">—</span></div>
+        <div class="d-row"><span class="d-lbl">รายละเอียด</span><span class="d-val" id="d-detail" style="font-size:12px;color:var(--g600)">—</span></div>
+        <div class="d-row">
+          <span class="d-lbl">แนบใบเสร็จ</span>
+          <div class="d-val">
+            <div id="d-img-wrap"></div>
           </div>
         </div>
       </div>
-    </div>
       <div class="d-section">
         <div class="d-section-title">อัปเดตสถานะ</div>
         <div class="perm-notice" id="perm-notice"></div>
         <div class="d-label">สถานะ</div>
         <select class="d-select" id="d-status">
-          <option>รับเรื่องแล้ว</option><option>กำลังดำเนินการ</option>
-          <option>รอข้อมูลเพิ่มเติม</option><option>แก้ไขเสร็จแล้ว</option><option>ปิดเคส</option>
+          <option>รับเรื่องแล้ว</option>
+          <option>กำลังดำเนินการ</option>
+          <option>รอข้อมูลเพิ่มเติม</option>
+          <option>แก้ไขเสร็จแล้ว</option>
+          <option>ปิดเคส</option>
         </select>
         <div class="d-label">มอบหมายให้</div>
         <select class="d-select" id="d-assignee">
           <option value="-">— ยังไม่มอบหมาย —</option>
-          <option>Bata Team</option><option>Bay e-Tax Team</option><option>ทีม Bata + Bay</option>
+          <option>Bata Team</option>
+          <option>Bay e-Tax Team</option>
+          <option>ทีม Bata + Bay</option>
         </select>
         <div class="d-label" id="lbl-approve" style="display:none">รับผิดชอบโดย (Bata)</div>
         <input class="d-input" id="d-approve" placeholder="ชื่อผู้อนุมัติ" style="display:none" />
