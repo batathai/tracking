@@ -492,7 +492,16 @@ async function loadData() {
     const r = await fetch(GAS_URL + "?action=all");
     const d = await r.json();
     if (!d.success) throw new Error(d.error || "โหลดไม่สำเร็จ");
+    
+    // 1. รับข้อมูลจากเซิร์ฟเวอร์
     allTickets = d.tickets || [];
+    
+    // 2. เพิ่มบรรทัดนี้เพื่อบังคับแมปตัวแปร fileUrl จากคอลัมน์ R เข้าสู่แดชบอร์ด
+    allTickets = allTickets.map(t => ({
+      ...t,
+      fileUrl: t.fileUrl || ""
+    }));
+
     populateIssueFilter();
     applyFilters();
   } catch(e) {
