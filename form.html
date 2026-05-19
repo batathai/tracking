@@ -490,10 +490,8 @@
     var receipt = document.getElementById("receipt").value.trim();
     var issueType = document.getElementById("issue-type").value;
     var consent = document.getElementById("consent").checked;
-
     var fileInput = document.getElementById("file-upload");
     var hasFile = fileInput && fileInput.files.length > 0;
-
     var valid = true;
     
     showError("fullname", !fullname); if (!fullname) valid = false;
@@ -503,7 +501,6 @@
     showError("branch", !branch); if (!branch) valid = false;
     showError("receipt", !receipt); if (!receipt) valid = false;
     showError("issue-type", !issueType); if (!issueType) valid = false;
-    
     showError("file-upload", !hasFile); if (!hasFile) valid = false;
 
     var consentErr = document.getElementById("err-consent");
@@ -540,6 +537,35 @@
       formData.append(key, payload[key]);
     }
 
+    // --- ส่วนแก้ไข: ตรวจสอบและดึงไฟล์ภาพเข้า FormData ในรูปแบบ Base64 ---
+    if (hasFile) {
+      var file = fileInput.files[0];
+      var reader = new FileReader();
+      
+      reader.onload = function(e) {
+        var base64Data = e.target.result.split(',')[1]; // ตัดเอาเฉพาะเนื้อหา Base64
+        formData.append("fileData", base64Data);
+        formData.append("fileName", file.name);
+        formData.append("mimeType", file.type);
+        
+        // ส่งข้อมูลแบบที่มีไฟล์แนบไปด้วย
+        executeFetch(formData, btn, spinner, btnText);
+      };
+      reader.readAsDataURL(file); // เริ่มทำการแปลงรูปภาพ
+    } else {
+      // ส่งข้อมูลทันที (กรณีตั้งค่าให้ไม่ต้องแนบไฟล์ได้)
+      executeFetch(formData, btn, spinner, btnText);
+    }
+
+    function resetBtn() {
+      btn.disabled = false;
+      spinner.style.display = "none";
+      btnText.textContent = "ส่งแบบฟอร์ม / Submit";
+    }
+  }
+
+  // ฟังก์ชันแยกสำหรับเรียกใช้ fetch ยิงส่งข้อมูลไปหลังบ้าน
+  function executeFetch(formData, btn, spinner, btnText) {
     fetch(SCRIPT_URL, { method: "POST", body: formData })
     .then(function(res) { return res.json(); })
     .then(function(data) {
@@ -593,7 +619,7 @@
   var closeBtn = document.getElementById("close-consent-btn");
 
   function openModal(e) {
-    e.preventDefault(); // ป้องกันไม่ให้หน้าต่างกระโดดเมื่อกดลิงก์ #
+    e.preventDefault(); 
     modal.style.display = "flex";
   }
   
@@ -601,7 +627,6 @@
   if(openBtnEn) openBtnEn.addEventListener("click", openModal);
   if(closeBtn) closeBtn.addEventListener("click", function() { modal.style.display = "none"; });
   
-  // เพิ่มเติม: ถ้าคลิกพื้นที่สีดำรอบๆ กล่องป๊อปอัป ให้ปิดหน้าต่างได้เช่นกัน
   window.addEventListener("click", function(e) {
     if (e.target == modal) { modal.style.display = "none"; }
   });
