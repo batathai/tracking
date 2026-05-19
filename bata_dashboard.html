@@ -157,6 +157,10 @@ tbody td{padding:11px 14px;vertical-align:middle}
 .btn-gas-cancel{padding:11px 16px;background:var(--g100);color:var(--g600);border:none;border-radius:8px;font-size:14px;font-family:var(--font);cursor:pointer}
 .empty-td{text-align:center;padding:2.5rem;color:var(--g400);font-size:14px}
 @media print{.topbar,.btn-action,#drawer-overlay,#lock,#user-modal,#gas-modal{display:none!important}body{background:#fff}.main{padding:0;max-width:100%}}
+.d-img-wrap{margin-top:8px}
+.d-img-wrap img{width:100%;max-height:280px;object-fit:contain;border-radius:8px;border:1px solid var(--g200);cursor:zoom-in}
+.d-img-link{display:inline-block;margin-top:6px;font-size:12px;color:var(--blue)}
+.d-img-none{font-size:12px;color:var(--g400);font-style:italic}
 </style>
 </head>
 <body>
@@ -270,6 +274,9 @@ tbody td{padding:11px 14px;vertical-align:middle}
         <div class="d-row"><span class="d-lbl">ใบเสร็จ</span><span class="d-val" id="d-receipt">—</span></div>
         <div class="d-row"><span class="d-lbl">ประเภท</span><span class="d-val" id="d-issue">—</span></div>
         <div class="d-row"><span class="d-lbl">รายละเอียด</span><span class="d-val" id="d-detail" style="font-size:12px;color:var(--g600)">—</span></div>
+        <div class="d-row"><span class="d-lbl">หลักฐาน</span><div class="d-val"><div class="d-img-wrap" id="d-img-wrap"></div>
+      </div>
+    </div>
       </div>
       <div class="d-section">
         <div class="d-section-title">อัปเดตสถานะ</div>
@@ -580,6 +587,21 @@ function openDrawer(idx) {
   document.getElementById("d-receipt").textContent  = t.receipt||"—";
   document.getElementById("d-issue").textContent    = t.issueType||"—";
   document.getElementById("d-detail").textContent   = t.detail||"—";
+  
+  const imgWrap = document.getElementById("d-img-wrap");
+  if (imgWrap) {
+    if (t.fileUrl && t.fileUrl.startsWith("http")) {
+      const fileId = t.fileUrl.match(/[-\w]{25,}/)?.[0] || "";
+      const thumb  = fileId ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w600` : "";
+      imgWrap.innerHTML = thumb
+        ? `<img src="${thumb}" alt="หลักฐาน" onerror="this.style.display='none'">
+           <a class="d-img-link" href="${esc(t.fileUrl)}" target="_blank">🔗 เปิดรูปขนาดเต็ม</a>`
+        : `<a class="d-img-link" href="${esc(t.fileUrl)}" target="_blank">🔗 ดูไฟล์แนบ</a>`;
+    } else {
+      imgWrap.innerHTML = `<span class="d-img-none">ไม่มีรูปแนบ</span>`;
+    }
+  }
+
   document.getElementById("d-status").value    = t.status||"รับเรื่องแล้ว";
   document.getElementById("d-assignee").value  = t.assignee||"-";
   document.getElementById("d-est").value       = t.estimatedDate||"";
