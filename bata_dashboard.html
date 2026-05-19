@@ -588,6 +588,7 @@ function openDrawer(idx) {
   document.getElementById("d-issue").textContent    = t.issueType||"—";
   document.getElementById("d-detail").textContent   = t.detail||"—";
   
+  console.log("fileUrl:", t.fileUrl);
   const imgWrap = document.getElementById("d-img-wrap");
   if (imgWrap) {
     if (t.fileUrl && t.fileUrl.startsWith("http")) {
