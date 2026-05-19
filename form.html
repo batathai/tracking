@@ -301,20 +301,18 @@
 <div class="container">
 
   <div id="form-section">
-
     <div class="form-card">
       <div class="section-title">ข้อมูลติดต่อ / Contact Information</div>
-
       <div class="field">
         <label>ชื่อ-นามสกุล <span class="en">Full Name</span><span class="req">*</span></label>
         <input type="text" id="fullname" placeholder="กรอกชื่อ-นามสกุล" />
         <div class="error-msg" id="err-fullname">กรุณากรอกชื่อ-นามสกุล</div>
       </div>
-
+      </div>
       <div class="two-col">
         <div class="field">
           <label>เบอร์โทรศัพท์ <span class="en">Phone</span><span class="req">*</span></label>
-          <input type="tel" id="phone" placeholder="0812345678" />
+          <input type="tel" id="phone" placeholder="08xxxxxxx" />
           <div class="error-msg" id="err-phone">กรุณากรอกเบอร์โทรศัพท์</div>
         </div>
         <div class="field">
@@ -323,12 +321,6 @@
           <div class="error-msg" id="err-email">กรุณากรอกอีเมลให้ถูกต้อง</div>
         </div>
       </div>
-
-      <div class="field">
-        <label>เลขประจำตัวผู้เสียภาษี <span class="en">Tax ID (Optional)</span></label>
-        <input type="text" id="taxid" placeholder="ถ้ามี / If available" />
-      </div>
-    </div>
 
     <div class="form-card">
       <div class="section-title">ข้อมูลการซื้อ / Purchase Information</div>
@@ -362,7 +354,7 @@
           <option value="">-- เลือกประเภทปัญหา / Select issue type --</option>
           <option value="ไม่ได้รับใบกำกับภาษีอิเล็กทรอนิกส์">ไม่ได้รับใบกำกับภาษีอิเล็กทรอนิกส์ (Did Not Receive e-Tax)</option>
           <option value="ข้อมูลในใบกำกับภาษีไม่ถูกต้อง">ข้อมูลในใบกำกับภาษีไม่ถูกต้อง (Incorrect Information)</option>
-          <option value="ต้องการแก้ไขอีเมล">ต้องการแก้ไขอีเมล (Change Email)</option>
+          <option value="เปิดไฟล์ไม่ได้">เปิดไฟล์ไม่ได้ (Can't Open File)</option>
           <option value="อื่นๆ">อื่นๆ (Other)</option>
         </select>
         <div class="error-msg" id="err-issue-type">กรุณาเลือกประเภทปัญหา</div>
@@ -374,28 +366,28 @@
       </div>
 
       <div class="field">
-        <label>แนบใบเสร็จ / หลักฐาน <span class="en">Upload Receipt</span></label>
-        <label class="file-upload" for="file-upload">
+        <label>แนบใบเสร็จ / หลักฐาน <span class="en">Upload Receipt</span><span class="req">*</span></label>
+        
+        <label class="file-upload" for="file-upload" id="file-upload-label">
           <input type="file" id="file-upload" accept="image/*,.pdf" onchange="handleFile(this)" />
           <div class="file-upload-icon">📎</div>
           <div class="file-upload-text">คลิกเพื่อแนบไฟล์</div>
           <div class="file-upload-hint">รองรับ JPG, PNG, PDF (ไม่เกิน 5MB)</div>
           <div class="file-name" id="file-name"></div>
         </label>
+        
+        <div class="error-msg" id="err-file-upload">กรุณาแนบใบเสร็จ หรือ หลักฐานการซื้อสินค้า / Please upload your receipt</div>
       </div>
     </div>
-
     <div class="form-card">
       <div class="section-title">การยินยอม / Consent</div>
-      <div class="consent-box">
-        ข้าพเจ้ายินยอมให้ Bata Thailand เก็บรวบรวมและใช้ข้อมูลส่วนบุคคลที่ให้ไว้ในแบบฟอร์มนี้ เพื่อวัตถุประสงค์ในการดำเนินการเกี่ยวกับใบกำกับภาษีอิเล็กทรอนิกส์เท่านั้น<br><br>
-        I consent to Bata Thailand collecting and using the personal data provided in this form solely for the purpose of processing e-Tax related requests.
-      </div>
       <div class="checkbox-row">
         <input type="checkbox" id="consent" />
-        <label for="consent">ฉันยินยอมตามเงื่อนไขข้างต้น / I agree to the above terms <span style="color:var(--red)">*</span></label>
+        <label for="consent">
+          ฉันยอมรับ <a href="#" id="open-consent-btn" style="color:var(--red); text-decoration:underline; font-weight:500;">เงื่อนไขการเก็บรวบรวมข้อมูลส่วนบุคคล</a> / I agree to the <a href="#" id="open-consent-btn-en" style="color:var(--red); text-decoration:underline; font-weight:500;">Privacy Terms</a> <span style="color:var(--red)">*</span>
+        </label>
       </div>
-      <div class="error-msg" id="err-consent">กรุณายืนยันการยินยอม</div>
+      <div class="error-msg" id="err-consent">กรุณายอมรับเงื่อนไขเพื่อดำเนินการต่อ / Kindly accept the terms to proceed</div>
     </div>
 
     <button class="submit-btn" id="submit-btn" onclick="submitForm()">
@@ -403,7 +395,45 @@
       <span id="btn-text">ส่งแบบฟอร์ม / Submit</span>
       <div class="spinner" id="spinner"></div>
     </button>
+    </div> <div id="consent-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; align-items:center; justify-content:center; padding:1rem;">
+    <div style="background:var(--white); max-width:600px; width:100%; border-radius:var(--radius-lg); padding:1.75rem; max-height:85vh; display:flex; flex-direction:column; box-shadow:0 12px 30px rgba(0,0,0,0.2);">
+      <div style="font-weight:700; font-size:16px; margin-bottom:1rem; border-bottom:1px solid var(--gray-200); padding-bottom:0.75rem; color:var(--gray-900);">
+        ข้อตกลงและเงื่อนไข / Terms & Conditions
+      </div>
+      
+      <div style="overflow-y:auto; font-size:13px; color:var(--gray-600); line-height:1.6; padding-right:8px; margin-bottom:1.5rem;">
+        
+        <div style="margin-bottom: 1.5rem;">
+          <p style="font-weight: 600; color: var(--gray-900); margin-bottom: 8px;">กรุณายอมรับเงื่อนไขเพื่อดำเนินการต่อ</p>
+          <p style="margin-bottom: 8px;">ข้าพเจ้าเข้าใจและยินยอมที่จะใช้บริการนี้ในฐานะส่วนบุคคล โดยข้อมูลที่ได้ให้มานั้นถูกต้องครบถ้วนตามความเป็นจริง ทุกประการ</p>
+          <p style="margin-bottom: 8px;">เพื่อวัตถุประสงค์ในการใช้บริการขอใบกำกับภาษีอิเล็กทรอนิกส์ และ / หรือ การขอคืนภาษีมูลค่าเพิ่มโดยวิธีการ ทางอิเล็กทรอนิกส์ ข้าพเจ้ายินยอมให้:</p>
+          <ul style="margin-left: 20px; margin-bottom: 8px;">
+            <li>(1) BATA (THAILAND) LIMITED ดำเนินการรวบรวม ประมวลผล และ / หรือ จัดเก็บข้อมูลส่วนบุคคลของข้าพเจ้า; และ</li>
+            <li>(2) แบ่งปันข้อมูลส่วนบุคคลของ ข้าพเจ้ากับผู้ให้บริการ BATA (THAILAND) LIMITED และผู้ให้บริการ (หรือผู้รับเหมาช่วงของ ผู้ให้บริการ) ที่เกี่ยวข้องกับการดำเนินการขอรับใบกำกับภาษีอิเล็กทรอนิกส์ และ / หรือ การขอคืนภาษีมูลค่าเพิ่มโดยวิธีการทางอิเล็กทรอนิกส์</li>
+          </ul>
+          <p style="margin-bottom: 4px;">ข้าพเจ้าได้อ่านและยอมรับ BATA (THAILAND) LIMITED นโยบายความเป็นส่วนตัว</p>
+          <p style="font-size: 11.5px; color: var(--gray-400);">การขอใบกำกับภาษีอิเล็กทรอนิกส์และ/ หรือการขอคืนภาษีมูลค่าเพิ่ม ให้บริการโดยบริษัท ฟินเน็ต เวนเจอร์ส จำกัด และ / หรือ บริษัท เน็ตเบย์ จำกัด (มหาชน)</p>
+        </div>
 
+        <hr style="border: 0; border-top: 1px dashed var(--gray-200); margin-bottom: 1.5rem;">
+
+        <div>
+          <p style="font-weight: 600; color: var(--gray-900); margin-bottom: 8px;">Kindly accept the terms to proceed</p>
+          <p style="margin-bottom: 8px;">I understand and agree that I am using this service in my personal capacity and all the information provided by me shall be true and accurate.</p>
+          <p style="margin-bottom: 8px;">For the sole purpose of this E-Tax and /or VAT Refund services, I consent to:</p>
+          <ul style="margin-left: 20px; margin-bottom: 8px;">
+            <li>(1) BATA (THAILAND) LIMITED the collection, processing and/or storage of my personal data by; and</li>
+            <li>(2) the sharing of my personal data between BATA (THAILAND) LIMITED and its service provider (or any of such service provider's sub-contractors) providing this E-Tax and / or VAT Refund services.</li>
+          </ul>
+          <p style="margin-bottom: 4px;">I have read and agreed to BATA (THAILAND) LIMITED privacy policy.</p>
+          <p style="font-size: 11.5px; color: var(--gray-400);">This E-Tax and / or VAT Refund Service is enabled by Fynnet Ventures Co., Ltd and/or Netbay Public Company Limited.</p>
+        </div>
+      </div>
+      
+      <button type="button" id="close-consent-btn" class="btn-red" style="width:100%; justify-content:center; padding:12px; font-weight:600; border-radius:var(--radius-sm);">
+        รับทราบและปิด / Close
+      </button>
+    </div>
   </div>
 
   <div id="success-screen">
@@ -430,7 +460,7 @@
 <footer>© 2025 Bata Thailand · ทีม e-Tax Support</footer>
 
 <script>
-  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycby9giR6-Vfm_ukold9fiOzhDMrxOBAT7HrZOQRFfPtw1-zHZ9OesJsIJBRImep0ox4J/exec";
+  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbytk4JXfKydz2_gx1zoZycFz3DA6U4bXjCW79rinO43AurEYMHEdYzUEcfyOIjAVgbX/exec";
 
   function handleFile(input) {
     var fileName = input.files[0] ? input.files[0].name : "";
@@ -460,8 +490,10 @@
     var receipt = document.getElementById("receipt").value.trim();
     var issueType = document.getElementById("issue-type").value;
     var consent = document.getElementById("consent").checked;
-
+    var fileInput = document.getElementById("file-upload");
+    var hasFile = fileInput && fileInput.files.length > 0;
     var valid = true;
+    
     showError("fullname", !fullname); if (!fullname) valid = false;
     showError("phone", !phone); if (!phone) valid = false;
     showError("email", !validateEmail(email)); if (!validateEmail(email)) valid = false;
@@ -469,11 +501,15 @@
     showError("branch", !branch); if (!branch) valid = false;
     showError("receipt", !receipt); if (!receipt) valid = false;
     showError("issue-type", !issueType); if (!issueType) valid = false;
+    showError("file-upload", !hasFile); if (!hasFile) valid = false;
 
     var consentErr = document.getElementById("err-consent");
-    if (!consent) { consentErr.style.display = "block"; valid = false; }
-    else { consentErr.style.display = "none"; }
-
+    if (!consent) { 
+      if (consentErr) consentErr.style.display = "block"; 
+      valid = false; 
+    } else { 
+      if (consentErr) consentErr.style.display = "none"; 
+    }
     if (!valid) { window.scrollTo({top: 0, behavior: "smooth"}); return; }
 
     var btn = document.getElementById("submit-btn");
@@ -487,7 +523,7 @@
       fullname: fullname,
       phone: phone,
       email: email,
-      taxid: document.getElementById("taxid").value.trim(),
+      taxid: "",
       purchaseDate: purchaseDate,
       branch: branch,
       receipt: receipt,
@@ -501,6 +537,35 @@
       formData.append(key, payload[key]);
     }
 
+    // --- ส่วนแก้ไข: ตรวจสอบและดึงไฟล์ภาพเข้า FormData ในรูปแบบ Base64 ---
+    if (hasFile) {
+      var file = fileInput.files[0];
+      var reader = new FileReader();
+      
+      reader.onload = function(e) {
+        var base64Data = e.target.result.split(',')[1]; // ตัดเอาเฉพาะเนื้อหา Base64
+        formData.append("fileData", base64Data);
+        formData.append("fileName", file.name);
+        formData.append("mimeType", file.type);
+        
+        // ส่งข้อมูลแบบที่มีไฟล์แนบไปด้วย
+        executeFetch(formData, btn, spinner, btnText);
+      };
+      reader.readAsDataURL(file); // เริ่มทำการแปลงรูปภาพ
+    } else {
+      // ส่งข้อมูลทันที (กรณีตั้งค่าให้ไม่ต้องแนบไฟล์ได้)
+      executeFetch(formData, btn, spinner, btnText);
+    }
+
+    function resetBtn() {
+      btn.disabled = false;
+      spinner.style.display = "none";
+      btnText.textContent = "ส่งแบบฟอร์ม / Submit";
+    }
+  }
+
+  // ฟังก์ชันแยกสำหรับเรียกใช้ fetch ยิงส่งข้อมูลไปหลังบ้าน
+  function executeFetch(formData, btn, spinner, btnText) {
     fetch(SCRIPT_URL, { method: "POST", body: formData })
     .then(function(res) { return res.json(); })
     .then(function(data) {
@@ -530,7 +595,7 @@
   function resetForm() {
     document.getElementById("form-section").style.display = "block";
     document.getElementById("success-screen").style.display = "none";
-    ["fullname","phone","email","taxid","purchase-date","branch","receipt","issue-type","detail"].forEach(function(id) {
+    ["fullname","phone","email","purchase-date","branch","receipt","issue-type","detail"].forEach(function(id) {
       var el = document.getElementById(id);
       if (el) el.value = "";
     });
@@ -546,6 +611,25 @@
 
     window.scrollTo({top: 0, behavior: "smooth"});
   }
+
+  // === ระบบเปิด-ปิดหน้าต่างป๊อปอัป Consent Modal ===
+  var modal = document.getElementById("consent-modal");
+  var openBtnTh = document.getElementById("open-consent-btn");
+  var openBtnEn = document.getElementById("open-consent-btn-en");
+  var closeBtn = document.getElementById("close-consent-btn");
+
+  function openModal(e) {
+    e.preventDefault(); 
+    modal.style.display = "flex";
+  }
+  
+  if(openBtnTh) openBtnTh.addEventListener("click", openModal);
+  if(openBtnEn) openBtnEn.addEventListener("click", openModal);
+  if(closeBtn) closeBtn.addEventListener("click", function() { modal.style.display = "none"; });
+  
+  window.addEventListener("click", function(e) {
+    if (e.target == modal) { modal.style.display = "none"; }
+  });
 </script>
 </body>
 </html>
