@@ -610,7 +610,8 @@ function openDrawer(idx) {
   // เปิด Console ดูใน Browser ได้เลยว่าตัวแปรส่งค่าลิงก์มาในชื่ออะไรกันแน่
   console.log("=== ตรวจสอบค่าไฟล์แนบของเคสนี้ ===");
   console.log("ค่าใน t.fileUrl คือ:", t.fileUrl);
-  console.log("ค่าใน t.receiptUrl คือ:", t.receiptUrl); 
+  console.log("ค่าใน t.receiptUrl คือ:", t.receiptUrl);
+  console.log("ข้อมูลทั้งหมดในตัวแปร t ของเคสนี้คือ:", t); 
 
   // รองรับทั้งกรณีที่เก็บในชื่อ t.fileUrl หรือ t.receiptUrl
   const finalFileUrl = t.fileUrl || t.receiptUrl || "";
