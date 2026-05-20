@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bata e-Tax — Admin Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 :root {
   --red:#CC0000; --red-dark:#990000; --red-light:#fff5f5;
@@ -99,9 +100,9 @@ tbody td{padding:11px 14px;vertical-align:middle}
 .bar-top{display:flex;justify-content:space-between;font-size:12px;color:var(--g600);margin-bottom:4px}
 .bar-track{background:var(--g100);border-radius:4px;height:7px;overflow:hidden}
 .bar-fill{height:100%;border-radius:4px;transition:width .6s ease}
-#drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none;align-items:center;justify-content:flex-end}
+#drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none;align-items:center;justify-content:flex-end;overflow:hidden}
 #drawer-overlay.open{display:flex}
-.drawer{background:var(--white);width:440px;height:100%;overflow-y:auto;box-shadow:-8px 0 40px rgba(0,0,0,.15);animation:slideIn .25s ease;display:flex;flex-direction:column}
+.drawer{background:var(--white);width:440px;height:100%;max-height:100vh;overflow-y:auto;box-shadow:-8px 0 40px rgba(0,0,0,.15);animation:slideIn .25s ease;display:flex;flex-direction:column}
 @keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
 .drawer-head{background:var(--red);padding:1.25rem 1.5rem;display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0}
 .drawer-eyebrow{font-size:10px;color:rgba(255,255,255,.65);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px}
@@ -274,22 +275,35 @@ tbody td{padding:11px 14px;vertical-align:middle}
         <div class="d-row"><span class="d-lbl">ใบเสร็จ</span><span class="d-val" id="d-receipt">—</span></div>
         <div class="d-row"><span class="d-lbl">ประเภท</span><span class="d-val" id="d-issue">—</span></div>
         <div class="d-row"><span class="d-lbl">รายละเอียด</span><span class="d-val" id="d-detail" style="font-size:12px;color:var(--g600)">—</span></div>
-        <div class="d-row"><span class="d-lbl">หลักฐาน</span><div class="d-val"><div class="d-img-wrap" id="d-img-wrap"></div>
-      </div>
-    </div>
+        <div class="d-row">
+        <div class="d-row">
+        <div class="d-lbl">ใบเสร็จ</div>
+        <div class="d-val" id="d-receipt">—</div> </div>
+
+        <div class="d-row">
+          <div class="d-lbl">แนบใบเสร็จ</div>
+          <div class="d-val" id="d-img-wrap">
+            กำลังโหลดข้อมูล...
+          </div>
+        </div>
       </div>
       <div class="d-section">
         <div class="d-section-title">อัปเดตสถานะ</div>
         <div class="perm-notice" id="perm-notice"></div>
         <div class="d-label">สถานะ</div>
         <select class="d-select" id="d-status">
-          <option>รับเรื่องแล้ว</option><option>กำลังดำเนินการ</option>
-          <option>รอข้อมูลเพิ่มเติม</option><option>แก้ไขเสร็จแล้ว</option><option>ปิดเคส</option>
+          <option>รับเรื่องแล้ว</option>
+          <option>กำลังดำเนินการ</option>
+          <option>รอข้อมูลเพิ่มเติม</option>
+          <option>แก้ไขเสร็จแล้ว</option>
+          <option>ปิดเคส</option>
         </select>
         <div class="d-label">มอบหมายให้</div>
         <select class="d-select" id="d-assignee">
           <option value="-">— ยังไม่มอบหมาย —</option>
-          <option>Bata Team</option><option>Bay e-Tax Team</option><option>ทีม Bata + Bay</option>
+          <option>Bata Team</option>
+          <option>Bay e-Tax Team</option>
+          <option>ทีม Bata + Bay</option>
         </select>
         <div class="d-label" id="lbl-approve" style="display:none">รับผิดชอบโดย (Bata)</div>
         <input class="d-input" id="d-approve" placeholder="ชื่อผู้อนุมัติ" style="display:none" />
@@ -478,7 +492,16 @@ async function loadData() {
     const r = await fetch(GAS_URL + "?action=all");
     const d = await r.json();
     if (!d.success) throw new Error(d.error || "โหลดไม่สำเร็จ");
+    
+    // 1. รับข้อมูลจากเซิร์ฟเวอร์
     allTickets = d.tickets || [];
+    
+    // 2. เพิ่มบรรทัดนี้เพื่อบังคับแมปตัวแปร fileUrl จากคอลัมน์ R เข้าสู่แดชบอร์ด
+    allTickets = allTickets.map(t => ({
+      ...t,
+      fileUrl: t.fileUrl || ""
+    }));
+
     populateIssueFilter();
     applyFilters();
   } catch(e) {
@@ -526,8 +549,10 @@ function renderTable(tickets) {
     document.getElementById("tbl-body").innerHTML = "<tr><td colspan='7' class='empty-td'>📭 ไม่พบข้อมูล</td></tr>";
     return;
   }
+  
+  // บังคับเปลี่ยนจากส่งเลขลำดับ (Index) เป็นส่งเลขที่ตั๋ว (ticketNo) แทน เพื่อความแม่นยำ
   document.getElementById("tbl-body").innerHTML = tickets.map(t =>
-    `<tr onclick="openDrawer(${allTickets.indexOf(t)})">
+    `<tr onclick="openDrawerByNo('${esc(t.ticketNo)}')">
       <td class="td-ticket">${esc(t.ticketNo)}</td>
       <td class="td-name">${esc(t.fullname)}</td>
       <td class="td-issue">${esc(t.issueType)}</td>
@@ -537,6 +562,14 @@ function renderTable(tickets) {
       <td class="td-sm">${esc(t.assignee||"—")}</td>
     </tr>`
   ).join("");
+}
+
+// ฟังก์ชันช่วยค้นหาตั๋วที่ถูกต้อง เพื่อไม่ให้สลับแถวกันจนรูปหาย
+function openDrawerByNo(ticketNo) {
+  const idx = allTickets.findIndex(x => x.ticketNo === ticketNo);
+  if (idx !== -1) {
+    openDrawer(idx);
+  }
 }
 
 function badge(s) {
@@ -578,6 +611,8 @@ function renderCharts(tickets) {
 function openDrawer(idx) {
   const t = allTickets[idx]; if (!t) return;
   currentIdx = idx;
+  
+  // หยอดข้อมูลพื้นฐานลงในหน้าจอฝั่งขวา
   document.getElementById("d-id").textContent       = t.ticketNo||"—";
   document.getElementById("d-name").textContent     = t.fullname||"—";
   document.getElementById("d-email").textContent    = t.email||"—";
@@ -588,29 +623,46 @@ function openDrawer(idx) {
   document.getElementById("d-issue").textContent    = t.issueType||"—";
   document.getElementById("d-detail").textContent   = t.detail||"—";
   
-  console.log("fileUrl:", t.fileUrl);
+  // ── ส่วนแสดงผลคลิปหนีบกระดาษและพรีวิวรูปภาพ (จากคอลัมน์ R) ──
   const imgWrap = document.getElementById("d-img-wrap");
+  const finalFileUrl = (t.fileUrl || "").trim();
+
   if (imgWrap) {
-    if (t.fileUrl && t.fileUrl.startsWith("http")) {
-      const fileId = (t.fileUrl.match(/\/d\/([^/?]+)/) || t.fileUrl.match(/id=([^&]+)/) || [])[1] || "";
+    // ตรวจสอบว่ามีลิงก์ URL ส่งมาจากคอลัมน์ R จริงๆ และไม่ใช่ข้อความอื่น
+    if (finalFileUrl && finalFileUrl.startsWith("http")) {
+      
+      // สกัดหา ID ของ Google Drive สำหรับทำรูป Thumbnail พรีวิวอัตโนมัติ
+      const fileId = (finalFileUrl.match(/\/d\/([^/?]+)/) || finalFileUrl.match(/id=([^&]+)/) || [])[1] || "";
+      
       if (fileId) {
+        // มีรูปภาพพรีวิว และมีปุ่มคลิปหนีบกระดาษสีแดงให้กดเปิดแท็บใหม่
         imgWrap.innerHTML = `
+          <div style="margin-bottom: 8px;">
+            <a href="${finalFileUrl}" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none; font-size: 13px; font-weight: 600; color: var(--blue);">
+              <i class="fa-solid fa-paperclip" style="color: var(--red); font-size: 15px;"></i> เปิดดูรูปใบเสร็จที่แนบมา
+            </a>
+          </div>
           <img src="https://drive.google.com/thumbnail?id=${fileId}&sz=w600" 
-              alt="หลักฐาน" 
+              alt="หลักฐานใบเสร็จ" 
               style="width:100%;max-height:260px;object-fit:contain;border-radius:8px;border:1px solid var(--g200);cursor:zoom-in"
-              onclick="window.open('${t.fileUrl}','_blank')"
-              onerror="this.outerHTML='<span style=&quot;font-size:12px;color:var(--g400)&quot;>โหลดรูปไม่ได้ — </span><a href=&quot;${t.fileUrl}&quot; target=&quot;_blank&quot; style=&quot;font-size:12px;color:var(--blue)&quot;>🔗 เปิดไฟล์แนบ</a>'">
-          <div style="margin-top:6px">
-            <a href="${t.fileUrl}" target="_blank" style="font-size:12px;color:var(--blue)">🔗 เปิดรูปขนาดเต็ม</a>
-          </div>`;
+              onclick="window.open('${finalFileUrl}','_blank')">
+        `;
       } else {
-        imgWrap.innerHTML = `<a href="${t.fileUrl}" target="_blank" style="font-size:12px;color:var(--blue)">🔗 ดูไฟล์แนบ</a>`;
+        // มีลิงก์เปิดดู แต่อาจไม่ใช่ลิงก์จาก Google Drive (จะแสดงเฉพาะปุ่มคลิปหนีบกระดาษ)
+        imgWrap.innerHTML = `
+          <a href="${finalFileUrl}" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none; font-size: 13px; font-weight: 600; color: var(--blue);">
+            <i class="fa-solid fa-paperclip" style="color: var(--red); font-size: 15px;"></i> เปิดดูรูปใบเสร็จที่แนบมา
+          </a>
+        `;
       }
+      
     } else {
+      // หากคอลัมน์ R ในตารางแถวนั้นว่างเปล่า หรือระบุว่า "ไม่มีรูปแนบ"
       imgWrap.innerHTML = `<span style="font-size:12px;color:var(--g400);font-style:italic">ไม่มีรูปแนบ</span>`;
     }
   }
 
+  // ── ส่วนจัดการสิทธิ์ ฟอร์ม และปุ่มบันทึกด้านล่าง (คงเดิม) ──
   document.getElementById("d-status").value    = t.status||"รับเรื่องแล้ว";
   document.getElementById("d-assignee").value  = t.assignee||"-";
   document.getElementById("d-est").value       = t.estimatedDate||"";
