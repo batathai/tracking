@@ -137,7 +137,7 @@ tbody td{padding:11px 14px;vertical-align:middle}
 .user-table td{padding:10px 12px;border-bottom:1px solid var(--g100)}
 .btn-del{background:var(--red-light);color:var(--red);border:none;padding:4px 10px;border-radius:6px;font-size:12px;cursor:pointer;font-family:var(--font)}
 .add-user-form{background:var(--g50);border-radius:10px;padding:1rem;border:1px dashed var(--g300)}
-.add-user-title{font-size:13px;font-weight:600;color:var(--g700);margin-bottom:10px}
+.add-user-title{font-size:13px;font-weight:600;color:var(--g800);margin-bottom:10px}
 .add-user-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
 .au-input,.au-select{width:100%;padding:9px 11px;font-size:13px;font-family:var(--font);border:1.5px solid var(--g200);border-radius:7px;color:var(--g800);background:var(--white)}
 .au-input:focus,.au-select:focus{outline:none;border-color:var(--red)}
@@ -263,8 +263,6 @@ tbody td{padding:11px 14px;vertical-align:middle}
 <!-- DRAWER -->
 <div id="drawer-overlay" onclick="closeDrawer(event)">
   <div class="drawer">
-
-    <!-- HEADER -->
     <div class="drawer-head">
       <div>
         <div class="drawer-eyebrow">Ticket Number</div>
@@ -272,14 +270,9 @@ tbody td{padding:11px 14px;vertical-align:middle}
       </div>
       <button class="drawer-close" onclick="closeDrawer()">✕</button>
     </div>
-
-    <!-- BODY -->
     <div class="drawer-body">
-
-      <!-- CUSTOMER INFO -->
       <div class="d-section">
         <div class="d-section-title">ข้อมูลลูกค้า</div>
-
         <div class="d-row"><span class="d-lbl">ชื่อ</span><span class="d-val" id="d-name">—</span></div>
         <div class="d-row"><span class="d-lbl">อีเมล</span><span class="d-val" id="d-email">—</span></div>
         <div class="d-row"><span class="d-lbl">เบอร์โทร</span><span class="d-val" id="d-phone">—</span></div>
@@ -287,29 +280,20 @@ tbody td{padding:11px 14px;vertical-align:middle}
         <div class="d-row"><span class="d-lbl">วันที่ซื้อ</span><span class="d-val" id="d-purchase">—</span></div>
         <div class="d-row"><span class="d-lbl">ใบเสร็จ</span><span class="d-val" id="d-receipt">—</span></div>
         <div class="d-row"><span class="d-lbl">ประเภท</span><span class="d-val" id="d-issue">—</span></div>
-
         <div class="d-row">
           <span class="d-lbl">รายละเอียด</span>
           <span class="d-val d-muted" id="d-detail">—</span>
         </div>
-
-        <!-- RECEIPT IMAGE -->
         <div class="d-row" id="d-receipt-row">
           <span class="d-lbl">รูปแนบ</span>
           <div class="d-val" id="d-img-area">
             <span class="receipt-none">ไม่มีรูปแนบ</span>
           </div>
         </div>
-
       </div>
-
-      <!-- STATUS UPDATE -->
       <div class="d-section">
-
         <div class="d-section-title">อัปเดตสถานะ</div>
-
         <div class="perm-notice" id="perm-notice"></div>
-
         <label class="d-label">สถานะ</label>
         <select class="d-select" id="d-status">
           <option>รับเรื่องแล้ว</option>
@@ -318,7 +302,6 @@ tbody td{padding:11px 14px;vertical-align:middle}
           <option>แก้ไขเสร็จแล้ว</option>
           <option>ปิดเคส</option>
         </select>
-
         <label class="d-label">มอบหมายให้</label>
         <select class="d-select" id="d-assignee">
           <option value="-">— ยังไม่มอบหมาย —</option>
@@ -326,37 +309,21 @@ tbody td{padding:11px 14px;vertical-align:middle}
           <option>Bay e-Tax Team</option>
           <option>ทีม Bata + Bay</option>
         </select>
-
-        <label class="d-label" id="lbl-approve" style="display:none">
-          รับผิดชอบโดย (Bata)
-        </label>
-        <input class="d-input" id="d-approve"
-          placeholder="ชื่อผู้อนุมัติ"
-          style="display:none"/>
-
+        <label class="d-label" id="lbl-approve" style="display:none">รับผิดชอบโดย (Bata)</label>
+        <input class="d-input" id="d-approve" placeholder="ชื่อผู้อนุมัติ" style="display:none"/>
         <label class="d-label">วันที่คาดว่าจะเสร็จ</label>
         <input class="d-input" type="date" id="d-est"/>
-
         <label class="d-label">หมายเหตุถึงลูกค้า</label>
-        <textarea class="d-textarea" id="d-remark"
-          placeholder="ข้อความที่ลูกค้าจะเห็นในหน้า Tracking..."></textarea>
-
+        <textarea class="d-textarea" id="d-remark" placeholder="ข้อความที่ลูกค้าจะเห็นในหน้า Tracking..."></textarea>
         <label class="d-label">บันทึกภายใน (ไม่แสดงลูกค้า)</label>
-        <textarea class="d-textarea" id="d-internal"
-          placeholder="บันทึกสำหรับทีมงาน..."></textarea>
-
+        <textarea class="d-textarea" id="d-internal" placeholder="บันทึกสำหรับทีมงาน..."></textarea>
       </div>
-
     </div>
-
-    <!-- FOOTER -->
     <div class="drawer-footer">
       <button class="btn-cancel-d" onclick="closeDrawer()">ยกเลิก</button>
       <button class="btn-save-d" id="btn-save-d" onclick="saveTicket()">บันทึก</button>
     </div>
-
     <div class="save-result" id="save-result"></div>
-
   </div>
 </div>
 
@@ -469,7 +436,7 @@ function permLabel(p) {
 
 function openGasModal()  { document.getElementById("gas-input").value = GAS_URL; document.getElementById("gas-modal").classList.add("open"); }
 function closeGasModal() { document.getElementById("gas-modal").classList.remove("open"); }
-function saveGasUrl()    {
+function saveGasUrl() {
   GAS_URL = document.getElementById("gas-input").value.trim();
   localStorage.setItem("bata_admin_gas", GAS_URL);
   closeGasModal(); loadData();
@@ -630,37 +597,26 @@ function renderCharts(tickets) {
     ).join("") || "<div style='font-size:13px;color:var(--g400)'>ไม่มีข้อมูล</div>";
 }
 
-/* ─────────────────────────────────────────────────────────────
-   แปลง Google Drive URL → ลิงก์เปิดและ URL ภาพ preview
-   รองรับทั้ง:
-     https://drive.google.com/file/d/FILE_ID/view?usp=...
-     https://drive.google.com/open?id=FILE_ID
-     https://drive.google.com/uc?id=FILE_ID
-     https://docs.google.com/...
-   ─────────────────────────────────────────────────────────────*/
+/* ── Google Drive URL helpers ── */
 function extractDriveFileId(url) {
   if (!url) return "";
-  // รูปแบบ /d/FILE_ID/  เช่น drive.google.com/file/d/FILE_ID/view
   let m = url.match(/\/d\/([a-zA-Z0-9_-]{10,})/);
   if (m) return m[1];
-  // รูปแบบ ?id=FILE_ID หรือ &id=FILE_ID
-  // รองรับทั้ง: uc?export=view&id=, open?id=, uc?id=
   m = url.match(/[?&]id=([a-zA-Z0-9_-]{10,})/);
   if (m) return m[1];
   return "";
 }
 
-// แปลง fileUrl ใดๆ → URL สำหรับเปิดดูใน browser (ไม่ต้อง login)
 function buildOpenUrl(fileId, originalUrl) {
   if (fileId) return "https://drive.google.com/file/d/" + fileId + "/view";
   return originalUrl;
 }
 
-// URL สำหรับโหลดภาพตรงๆ — ลองหลายรูปแบบ
 function buildImageUrl(fileId) {
   return "https://drive.google.com/uc?export=view&id=" + fileId;
 }
 
+/* ── ✅ FIX: renderReceiptArea — ไม่มี | แล้ว ใช้ uc?export=view เสมอ ── */
 function renderReceiptArea(fileUrl) {
   const area = document.getElementById("d-img-area");
   if (!area) return;
@@ -671,20 +627,9 @@ function renderReceiptArea(fileUrl) {
     return;
   }
 
-  // รองรับ 2 รูปแบบ:
-  // แบบใหม่: "viewUrl|thumbUrl"  (Apps Script เก็บแยกไว้)
-  // แบบเก่า: URL เดียว (drive.google.com/file/d/... หรือ uc?export=view)
-  let openUrl, thumbUrl;
-
-
-    // แบบเก่า — ดึง fileId แล้วสร้าง URL เอง
-    const fileId = extractDriveFileId(raw);
-    openUrl  = buildOpenUrl(fileId, raw);
-    // thumbnail?id= คือ URL ที่ Google Drive รองรับอย่างเป็นทางการสำหรับ embedding
-    thumbUrl = fileId
-      ? `https://drive.google.com/uc?export=view&id=${fileId}`
-      : "";
-  }
+  const fileId = extractDriveFileId(raw);
+  const openUrl  = buildOpenUrl(fileId, raw);
+  const thumbUrl = fileId ? buildImageUrl(fileId) : "";
 
   const btnHtml = `
     <a class="receipt-open-btn" href="${openUrl}" target="_blank" rel="noopener">
@@ -726,32 +671,25 @@ function handleImgError(img) {
 }
 
 function openDrawer(idx) {
-  const t = allTickets[idx]; 
+  const t = allTickets[idx];
   if (!t) return;
-
   currentIdx = idx;
-
   document.getElementById("d-id").textContent       = t.ticketNo||"—";
   document.getElementById("d-name").textContent     = t.fullname||"—";
   document.getElementById("d-email").textContent    = t.email||"—";
   document.getElementById("d-phone").textContent    = t.phone||"—";
   document.getElementById("d-branch").textContent   = t.branch||"—";
-
   document.getElementById("d-purchase").textContent = t.purchaseDate||"—";
   document.getElementById("d-receipt").textContent  = t.receipt||"—";
   document.getElementById("d-issue").textContent    = t.issueType||"—";
   document.getElementById("d-detail").textContent   = t.detail||"—";
-
-  /* ✅ SHOW RECEIPT IMAGE */
   renderReceiptArea(t.fileUrl);
-
   document.getElementById("d-status").value    = t.status||"รับเรื่องแล้ว";
   document.getElementById("d-assignee").value  = t.assignee||"-";
   document.getElementById("d-est").value       = t.estimatedDate||"";
   document.getElementById("d-remark").value    = t.remark||"";
   document.getElementById("d-internal").value  = t.internal||"";
   document.getElementById("d-approve").value   = t.approvedBy||"";
-
   document.getElementById("drawer-overlay").classList.add("open");
   document.body.style.overflow = "hidden";
 }
