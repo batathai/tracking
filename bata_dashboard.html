@@ -689,7 +689,7 @@ function renderReceiptArea(fileUrl) {
     openUrl  = buildOpenUrl(fileId, raw);
     // thumbnail?id= คือ URL ที่ Google Drive รองรับอย่างเป็นทางการสำหรับ embedding
     thumbUrl = fileId
-      ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w800`
+      ? `https://drive.google.com/uc?export=view&id=${fileId}`
       : "";
   }
 
