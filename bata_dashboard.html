@@ -676,12 +676,7 @@ function renderReceiptArea(fileUrl) {
   // แบบเก่า: URL เดียว (drive.google.com/file/d/... หรือ uc?export=view)
   let openUrl, thumbUrl;
 
-  if (raw.includes("|")) {
-    // แบบใหม่ — แยก | ออกมา
-    const parts = raw.split("|");
-    openUrl  = parts[0].trim();
-    thumbUrl = parts[1].trim();
-  } else {
+
     // แบบเก่า — ดึง fileId แล้วสร้าง URL เอง
     const fileId = extractDriveFileId(raw);
     openUrl  = buildOpenUrl(fileId, raw);
