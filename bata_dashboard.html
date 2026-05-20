@@ -604,50 +604,74 @@ function renderCharts(tickets) {
    ─────────────────────────────────────────────────────────────*/
 function extractDriveFileId(url) {
   if (!url) return "";
-  // รูปแบบ /d/FILE_ID/
+  // รูปแบบ /d/FILE_ID/  เช่น drive.google.com/file/d/FILE_ID/view
   let m = url.match(/\/d\/([a-zA-Z0-9_-]{10,})/);
   if (m) return m[1];
   // รูปแบบ ?id=FILE_ID หรือ &id=FILE_ID
+  // รองรับทั้ง: uc?export=view&id=, open?id=, uc?id=
   m = url.match(/[?&]id=([a-zA-Z0-9_-]{10,})/);
   if (m) return m[1];
   return "";
+}
+
+// แปลง fileUrl ใดๆ → URL สำหรับเปิดดูใน browser (ไม่ต้อง login)
+function buildOpenUrl(fileId, originalUrl) {
+  if (fileId) return "https://drive.google.com/file/d/" + fileId + "/view";
+  return originalUrl;
+}
+
+// URL สำหรับโหลดภาพตรงๆ — ลองหลายรูปแบบ
+function buildImageUrl(fileId) {
+  // uc?export=view คือวิธีที่ Google Drive รองรับอย่างเป็นทางการ
+  // สำหรับไฟล์ที่ตั้ง "Anyone with the link"
+  return "https://drive.google.com/uc?export=view&id=" + fileId;
 }
 
 function renderReceiptArea(fileUrl) {
   const area = document.getElementById("d-img-area");
   if (!area) return;
 
-  const url = (fileUrl || "").trim();
-  if (!url || !url.startsWith("http")) {
+  const raw = (fileUrl || "").trim();
+  if (!raw || !raw.startsWith("http")) {
     area.innerHTML = `<span class="receipt-none">ไม่มีรูปแนบ</span>`;
     return;
   }
 
-  const fileId = extractDriveFileId(url);
+  // รองรับ 2 รูปแบบ:
+  // แบบใหม่: "viewUrl|thumbUrl"  (Apps Script เก็บแยกไว้)
+  // แบบเก่า: URL เดียว (drive.google.com/file/d/... หรือ uc?export=view)
+  let openUrl, thumbUrl;
 
-  // ปุ่มเปิดลิงก์เสมอ (ทั้ง Google Drive และ URL อื่นๆ)
-  const openUrl = fileId
-    ? `https://drive.google.com/file/d/${fileId}/view`
-    : url;
+  if (raw.includes("|")) {
+    // แบบใหม่ — แยก | ออกมา
+    const parts = raw.split("|");
+    openUrl  = parts[0].trim();
+    thumbUrl = parts[1].trim();
+  } else {
+    // แบบเก่า — ดึง fileId แล้วสร้าง URL เอง
+    const fileId = extractDriveFileId(raw);
+    openUrl  = buildOpenUrl(fileId, raw);
+    // thumbnail?id= คือ URL ที่ Google Drive รองรับอย่างเป็นทางการสำหรับ embedding
+    thumbUrl = fileId
+      ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w800`
+      : "";
+  }
 
-  if (fileId) {
-    /*
-      ใช้ lh3.googleusercontent.com/d/FILE_ID  ← วิธีที่ดีที่สุด
-      ไม่ถูก block โดย X-Frame-Options และ ไม่ต้องการ login
-      (ต้องตั้งค่าไฟล์ใน Drive เป็น "Anyone with the link" ก่อน)
-    */
-    const thumbUrl = `https://lh3.googleusercontent.com/d/${fileId}=w800`;
+  const btnHtml = `
+    <a class="receipt-open-btn" href="${openUrl}" target="_blank" rel="noopener">
+      <i class="fa-solid fa-arrow-up-right-from-square"></i> เปิดรูปใบเสร็จ
+    </a>`;
 
+  if (thumbUrl) {
     area.innerHTML = `
       <div class="receipt-box">
-        <a class="receipt-open-btn" href="${openUrl}" target="_blank" rel="noopener">
-          <i class="fa-solid fa-arrow-up-right-from-square"></i> เปิดรูปใบเสร็จ
-        </a>
+        ${btnHtml}
         <div class="receipt-preview-wrap" onclick="window.open('${openUrl}','_blank')">
           <img
             src="${thumbUrl}"
+            data-open="${openUrl}"
             alt="ใบเสร็จ"
-            onerror="handleImgError(this, '${openUrl}')"
+            onerror="handleImgError(this)"
           />
           <div class="receipt-zoom-hint">
             <i class="fa-solid fa-magnifying-glass-plus"></i> คลิกเพื่อเปิดเต็มจอ
@@ -655,25 +679,19 @@ function renderReceiptArea(fileUrl) {
         </div>
       </div>`;
   } else {
-    // URL ไม่ใช่ Google Drive — แสดงแค่ปุ่มเปิด
-    area.innerHTML = `
-      <div class="receipt-box">
-        <a class="receipt-open-btn" href="${url}" target="_blank" rel="noopener">
-          <i class="fa-solid fa-arrow-up-right-from-square"></i> เปิดรูปแนบ
-        </a>
-      </div>`;
+    area.innerHTML = `<div class="receipt-box">${btnHtml}</div>`;
   }
 }
 
-function handleImgError(img, openUrl) {
-  /* ถ้า lh3 โหลดไม่ได้ (ไฟล์ตั้งค่าเป็น private) แสดงข้อความแทน */
-  const wrap = img.closest(".receipt-preview-wrap");
+function handleImgError(img) {
+  const openUrl = img.getAttribute("data-open") || "";
+  const wrap    = img.closest(".receipt-preview-wrap");
   if (wrap) {
     wrap.outerHTML = `
       <div class="receipt-error">
-        ⚠️ ไม่สามารถโหลดรูปตัวอย่างได้<br>
-        <small>(ตรวจสอบว่าไฟล์ใน Google Drive ตั้งค่าเป็น <strong>"Anyone with the link"</strong>)</small><br>
-        <a href="${openUrl}" target="_blank" style="color:var(--blue);font-size:12px">→ กดที่นี่เพื่อเปิดดูในแท็บใหม่</a>
+        ⚠️ โหลดรูปตัวอย่างไม่ได้<br>
+        <small>ตรวจสอบว่าไฟล์ใน Google Drive ตั้งค่าเป็น <strong>"Anyone with the link"</strong></small><br>
+        <a href="${openUrl}" target="_blank" style="color:var(--blue);font-size:12px;margin-top:4px;display:inline-block">→ กดที่นี่เพื่อเปิดดูในแท็บใหม่</a>
       </div>`;
   }
 }
