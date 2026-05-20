@@ -697,7 +697,9 @@ function handleImgError(img) {
 }
 
 function openDrawer(idx) {
-  const t = allTickets[idx]; if (!t) return;
+  const t = allTickets[idx]; 
+  if (!t) return;
+
   currentIdx = idx;
 
   document.getElementById("d-id").textContent       = t.ticketNo||"—";
@@ -705,12 +707,13 @@ function openDrawer(idx) {
   document.getElementById("d-email").textContent    = t.email||"—";
   document.getElementById("d-phone").textContent    = t.phone||"—";
   document.getElementById("d-branch").textContent   = t.branch||"—";
+
   document.getElementById("d-purchase").textContent = t.purchaseDate||"—";
   document.getElementById("d-receipt").textContent  = t.receipt||"—";
   document.getElementById("d-issue").textContent    = t.issueType||"—";
   document.getElementById("d-detail").textContent   = t.detail||"—";
 
-  // ── แสดงรูปใบเสร็จ (แก้ใหม่) ──
+  /* ✅ SHOW RECEIPT IMAGE */
   renderReceiptArea(t.fileUrl);
 
   document.getElementById("d-status").value    = t.status||"รับเรื่องแล้ว";
@@ -719,25 +722,6 @@ function openDrawer(idx) {
   document.getElementById("d-remark").value    = t.remark||"";
   document.getElementById("d-internal").value  = t.internal||"";
   document.getElementById("d-approve").value   = t.approvedBy||"";
-  document.getElementById("save-result").textContent = "";
-  document.getElementById("save-result").className   = "save-result";
-
-  const canEdit    = CAN_EDIT(currentUser);
-  const canApprove = CAN_APPROVE(currentUser);
-  const notice     = document.getElementById("perm-notice");
-
-  document.getElementById("d-status").disabled   = !canEdit;
-  document.getElementById("d-assignee").disabled = !canApprove;
-  document.getElementById("d-est").disabled      = !canEdit;
-  document.getElementById("d-remark").disabled   = !canEdit;
-  document.getElementById("d-internal").disabled = !canEdit;
-  document.getElementById("btn-save-d").disabled = !canEdit;
-  document.getElementById("lbl-approve").style.display = canApprove ? "" : "none";
-  document.getElementById("d-approve").style.display   = canApprove ? "" : "none";
-  document.getElementById("d-approve").disabled        = !canApprove;
-
-  notice.textContent = !canEdit ? `สิทธิ์ "${permLabel(currentUser?.perm)}" ดูข้อมูลได้เท่านั้น` : "";
-  notice.classList.toggle("show", !canEdit);
 
   document.getElementById("drawer-overlay").classList.add("open");
   document.body.style.overflow = "hidden";
