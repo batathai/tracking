@@ -26,7 +26,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--g800);min-height:1
 .lock-logo{display:inline-flex;background:var(--red);color:#fff;font-weight:700;font-size:12px;padding:6px 10px;border-radius:5px;line-height:1.3;letter-spacing:.5px;margin-bottom:1.5rem}
 .lock-title{font-size:20px;font-weight:700;color:var(--g800);margin-bottom:4px}
 .lock-sub{font-size:13px;color:var(--g500);margin-bottom:1.5rem}
-.lock-hint{font-size:11px;color:var(--g400);background:var(--g100);border-radius:8px;padding:8px 12px;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:center;gap:6px}
 .lock-field{margin-bottom:10px;text-align:left}
 .lock-field label{font-size:12px;font-weight:500;color:var(--g600);display:block;margin-bottom:4px}
 .lock-input{width:100%;padding:11px 14px;font-size:14px;font-family:var(--font);border:1.5px solid var(--g200);border-radius:9px;color:var(--g800);background:var(--g50);transition:border-color .2s}
@@ -36,7 +35,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--g800);min-height:1
 .lock-error{font-size:13px;color:var(--red);min-height:20px;margin-top:8px}
 #app{display:none}
 
-/* ── TOPBAR (เหมือน index.html) ── */
 .topbar{background:var(--white);border-bottom:1px solid var(--g200);height:64px;display:flex;align-items:center;padding:0 1.5rem;position:sticky;top:0;z-index:100;}
 .logo-wrap{display:flex;align-items:center;gap:11px;}
 .logo-b{background:var(--red);color:#fff;width:38px;height:38px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0;}
@@ -61,8 +59,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--g800);min-height:1
 .btn-action:hover{border-color:var(--red);color:var(--red)}
 .btn-export{background:var(--g800);color:#fff;border-color:var(--g800);margin-left:auto}
 .btn-export:hover{background:#000;color:#fff;border-color:#000}
-.btn-users{background:var(--purple);color:#fff;border-color:var(--purple)}
-.btn-users:hover{background:#5b21b6;color:#fff;border-color:#5b21b6}
 .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem}
 .stat-card{background:var(--white);border-radius:var(--radius);padding:1.25rem 1.5rem;box-shadow:var(--shadow);border-left:4px solid transparent;transition:transform .15s}
 .stat-card:hover{transform:translateY(-2px)}
@@ -157,11 +153,20 @@ tbody td{padding:11px 14px;vertical-align:middle}
 .btn-gas-save{flex:1;padding:11px;background:var(--red);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;font-family:var(--font);cursor:pointer}
 .btn-gas-cancel{padding:11px 16px;background:var(--g100);color:var(--g600);border:none;border-radius:8px;font-size:14px;font-family:var(--font);cursor:pointer}
 .empty-td{text-align:center;padding:2.5rem;color:var(--g400);font-size:14px}
+
+/* ── Receipt image area ── */
+.receipt-box{margin-top:6px;background:var(--g50);border:1px solid var(--g200);border-radius:10px;padding:12px}
+.receipt-open-btn{display:inline-flex;align-items:center;gap:7px;background:var(--red);color:#fff;text-decoration:none;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;transition:background .2s;margin-bottom:10px}
+.receipt-open-btn:hover{background:var(--red-dark)}
+.receipt-preview-wrap{position:relative;border-radius:8px;overflow:hidden;border:1px solid var(--g200);background:#fff;cursor:pointer}
+.receipt-preview-wrap img{width:100%;max-height:260px;object-fit:contain;display:block;transition:opacity .2s}
+.receipt-preview-wrap:hover img{opacity:.85}
+.receipt-zoom-hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;background:rgba(0,0,0,.35);color:#fff;font-size:13px;font-weight:600;gap:5px;pointer-events:none}
+.receipt-preview-wrap:hover .receipt-zoom-hint{opacity:1}
+.receipt-none{font-size:12px;color:var(--g400);font-style:italic}
+.receipt-error{font-size:12px;color:var(--orange);padding:6px 0}
+
 @media print{.topbar,.btn-action,#drawer-overlay,#lock,#user-modal,#gas-modal{display:none!important}body{background:#fff}.main{padding:0;max-width:100%}}
-.d-img-wrap{margin-top:8px}
-.d-img-wrap img{width:100%;max-height:280px;object-fit:contain;border-radius:8px;border:1px solid var(--g200);cursor:zoom-in}
-.d-img-link{display:inline-block;margin-top:6px;font-size:12px;color:var(--blue)}
-.d-img-none{font-size:12px;color:var(--g400);font-style:italic}
 </style>
 </head>
 <body>
@@ -184,8 +189,6 @@ tbody td{padding:11px 14px;vertical-align:middle}
 
 <!-- APP -->
 <div id="app">
-
-  <!-- TOPBAR (เหมือน index.html) -->
   <div class="topbar">
     <div class="logo-wrap">
       <div class="logo-b">B</div>
@@ -275,18 +278,16 @@ tbody td{padding:11px 14px;vertical-align:middle}
         <div class="d-row"><span class="d-lbl">ใบเสร็จ</span><span class="d-val" id="d-receipt">—</span></div>
         <div class="d-row"><span class="d-lbl">ประเภท</span><span class="d-val" id="d-issue">—</span></div>
         <div class="d-row"><span class="d-lbl">รายละเอียด</span><span class="d-val" id="d-detail" style="font-size:12px;color:var(--g600)">—</span></div>
-        <div class="d-row">
-        <div class="d-row">
-        <div class="d-lbl">ใบเสร็จ</div>
-        <div class="d-val" id="d-receipt">—</div> </div>
 
-        <div class="d-row">
-          <div class="d-lbl">แนบใบเสร็จ</div>
-          <div class="d-val" id="d-img-wrap">
-            กำลังโหลดข้อมูล...
+        <!-- ── รูปใบเสร็จ (แก้ใหม่ทั้งหมด) ── -->
+        <div class="d-row" id="d-receipt-row">
+          <span class="d-lbl" style="padding-top:6px">รูปแนบ</span>
+          <div class="d-val" id="d-img-area">
+            <span class="receipt-none">ไม่มีรูปแนบ</span>
           </div>
         </div>
       </div>
+
       <div class="d-section">
         <div class="d-section-title">อัปเดตสถานะ</div>
         <div class="perm-notice" id="perm-notice"></div>
@@ -492,16 +493,7 @@ async function loadData() {
     const r = await fetch(GAS_URL + "?action=all");
     const d = await r.json();
     if (!d.success) throw new Error(d.error || "โหลดไม่สำเร็จ");
-    
-    // 1. รับข้อมูลจากเซิร์ฟเวอร์
-    allTickets = d.tickets || [];
-    
-    // 2. เพิ่มบรรทัดนี้เพื่อบังคับแมปตัวแปร fileUrl จากคอลัมน์ R เข้าสู่แดชบอร์ด
-    allTickets = allTickets.map(t => ({
-      ...t,
-      fileUrl: t.fileUrl || ""
-    }));
-
+    allTickets = (d.tickets || []).map(t => ({ ...t, fileUrl: t.fileUrl || "" }));
     populateIssueFilter();
     applyFilters();
   } catch(e) {
@@ -549,8 +541,6 @@ function renderTable(tickets) {
     document.getElementById("tbl-body").innerHTML = "<tr><td colspan='7' class='empty-td'>📭 ไม่พบข้อมูล</td></tr>";
     return;
   }
-  
-  // บังคับเปลี่ยนจากส่งเลขลำดับ (Index) เป็นส่งเลขที่ตั๋ว (ticketNo) แทน เพื่อความแม่นยำ
   document.getElementById("tbl-body").innerHTML = tickets.map(t =>
     `<tr onclick="openDrawerByNo('${esc(t.ticketNo)}')">
       <td class="td-ticket">${esc(t.ticketNo)}</td>
@@ -564,12 +554,9 @@ function renderTable(tickets) {
   ).join("");
 }
 
-// ฟังก์ชันช่วยค้นหาตั๋วที่ถูกต้อง เพื่อไม่ให้สลับแถวกันจนรูปหาย
 function openDrawerByNo(ticketNo) {
   const idx = allTickets.findIndex(x => x.ticketNo === ticketNo);
-  if (idx !== -1) {
-    openDrawer(idx);
-  }
+  if (idx !== -1) openDrawer(idx);
 }
 
 function badge(s) {
@@ -597,7 +584,6 @@ function renderCharts(tickets) {
       `<div class="bar-row"><div class="bar-top"><span>${esc(k)}</span><b style="color:var(--red)">${v}</b></div>
       <div class="bar-track"><div class="bar-fill" style="width:${Math.round(v/iMax*100)}%;background:var(--red)"></div></div></div>`
     ).join("") || "<div style='font-size:13px;color:var(--g400)'>ไม่มีข้อมูล</div>";
-
   const SCOLS    = ["รับเรื่องแล้ว","กำลังดำเนินการ","รอข้อมูลเพิ่มเติม","แก้ไขเสร็จแล้ว","ปิดเคส"];
   const SCOLVARS = ["var(--blue)","var(--orange)","var(--purple)","var(--green)","var(--g400)"];
   const sMax = Math.max(...Object.values(sc), 1);
@@ -608,11 +594,94 @@ function renderCharts(tickets) {
     ).join("") || "<div style='font-size:13px;color:var(--g400)'>ไม่มีข้อมูล</div>";
 }
 
+/* ─────────────────────────────────────────────────────────────
+   แปลง Google Drive URL → ลิงก์เปิดและ URL ภาพ preview
+   รองรับทั้ง:
+     https://drive.google.com/file/d/FILE_ID/view?usp=...
+     https://drive.google.com/open?id=FILE_ID
+     https://drive.google.com/uc?id=FILE_ID
+     https://docs.google.com/...
+   ─────────────────────────────────────────────────────────────*/
+function extractDriveFileId(url) {
+  if (!url) return "";
+  // รูปแบบ /d/FILE_ID/
+  let m = url.match(/\/d\/([a-zA-Z0-9_-]{10,})/);
+  if (m) return m[1];
+  // รูปแบบ ?id=FILE_ID หรือ &id=FILE_ID
+  m = url.match(/[?&]id=([a-zA-Z0-9_-]{10,})/);
+  if (m) return m[1];
+  return "";
+}
+
+function renderReceiptArea(fileUrl) {
+  const area = document.getElementById("d-img-area");
+  if (!area) return;
+
+  const url = (fileUrl || "").trim();
+  if (!url || !url.startsWith("http")) {
+    area.innerHTML = `<span class="receipt-none">ไม่มีรูปแนบ</span>`;
+    return;
+  }
+
+  const fileId = extractDriveFileId(url);
+
+  // ปุ่มเปิดลิงก์เสมอ (ทั้ง Google Drive และ URL อื่นๆ)
+  const openUrl = fileId
+    ? `https://drive.google.com/file/d/${fileId}/view`
+    : url;
+
+  if (fileId) {
+    /*
+      ใช้ lh3.googleusercontent.com/d/FILE_ID  ← วิธีที่ดีที่สุด
+      ไม่ถูก block โดย X-Frame-Options และ ไม่ต้องการ login
+      (ต้องตั้งค่าไฟล์ใน Drive เป็น "Anyone with the link" ก่อน)
+    */
+    const thumbUrl = `https://lh3.googleusercontent.com/d/${fileId}=w800`;
+
+    area.innerHTML = `
+      <div class="receipt-box">
+        <a class="receipt-open-btn" href="${openUrl}" target="_blank" rel="noopener">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> เปิดรูปใบเสร็จ
+        </a>
+        <div class="receipt-preview-wrap" onclick="window.open('${openUrl}','_blank')">
+          <img
+            src="${thumbUrl}"
+            alt="ใบเสร็จ"
+            onerror="handleImgError(this, '${openUrl}')"
+          />
+          <div class="receipt-zoom-hint">
+            <i class="fa-solid fa-magnifying-glass-plus"></i> คลิกเพื่อเปิดเต็มจอ
+          </div>
+        </div>
+      </div>`;
+  } else {
+    // URL ไม่ใช่ Google Drive — แสดงแค่ปุ่มเปิด
+    area.innerHTML = `
+      <div class="receipt-box">
+        <a class="receipt-open-btn" href="${url}" target="_blank" rel="noopener">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> เปิดรูปแนบ
+        </a>
+      </div>`;
+  }
+}
+
+function handleImgError(img, openUrl) {
+  /* ถ้า lh3 โหลดไม่ได้ (ไฟล์ตั้งค่าเป็น private) แสดงข้อความแทน */
+  const wrap = img.closest(".receipt-preview-wrap");
+  if (wrap) {
+    wrap.outerHTML = `
+      <div class="receipt-error">
+        ⚠️ ไม่สามารถโหลดรูปตัวอย่างได้<br>
+        <small>(ตรวจสอบว่าไฟล์ใน Google Drive ตั้งค่าเป็น <strong>"Anyone with the link"</strong>)</small><br>
+        <a href="${openUrl}" target="_blank" style="color:var(--blue);font-size:12px">→ กดที่นี่เพื่อเปิดดูในแท็บใหม่</a>
+      </div>`;
+  }
+}
+
 function openDrawer(idx) {
   const t = allTickets[idx]; if (!t) return;
   currentIdx = idx;
-  
-  // หยอดข้อมูลพื้นฐานลงในหน้าจอฝั่งขวา
+
   document.getElementById("d-id").textContent       = t.ticketNo||"—";
   document.getElementById("d-name").textContent     = t.fullname||"—";
   document.getElementById("d-email").textContent    = t.email||"—";
@@ -622,47 +691,10 @@ function openDrawer(idx) {
   document.getElementById("d-receipt").textContent  = t.receipt||"—";
   document.getElementById("d-issue").textContent    = t.issueType||"—";
   document.getElementById("d-detail").textContent   = t.detail||"—";
-  
-  // ── ส่วนแสดงผลคลิปหนีบกระดาษและพรีวิวรูปภาพ (จากคอลัมน์ R) ──
-  const imgWrap = document.getElementById("d-img-wrap");
-  const finalFileUrl = (t.fileUrl || "").trim();
 
-  if (imgWrap) {
-    // ตรวจสอบว่ามีลิงก์ URL ส่งมาจากคอลัมน์ R จริงๆ และไม่ใช่ข้อความอื่น
-    if (finalFileUrl && finalFileUrl.startsWith("http")) {
-      
-      // สกัดหา ID ของ Google Drive สำหรับทำรูป Thumbnail พรีวิวอัตโนมัติ
-      const fileId = (finalFileUrl.match(/\/d\/([^/?]+)/) || finalFileUrl.match(/id=([^&]+)/) || [])[1] || "";
-      
-      if (fileId) {
-        // มีรูปภาพพรีวิว และมีปุ่มคลิปหนีบกระดาษสีแดงให้กดเปิดแท็บใหม่
-        imgWrap.innerHTML = `
-          <div style="margin-bottom: 8px;">
-            <a href="${finalFileUrl}" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none; font-size: 13px; font-weight: 600; color: var(--blue);">
-              <i class="fa-solid fa-paperclip" style="color: var(--red); font-size: 15px;"></i> เปิดดูรูปใบเสร็จที่แนบมา
-            </a>
-          </div>
-          <img src="https://drive.google.com/thumbnail?id=${fileId}&sz=w600" 
-              alt="หลักฐานใบเสร็จ" 
-              style="width:100%;max-height:260px;object-fit:contain;border-radius:8px;border:1px solid var(--g200);cursor:zoom-in"
-              onclick="window.open('${finalFileUrl}','_blank')">
-        `;
-      } else {
-        // มีลิงก์เปิดดู แต่อาจไม่ใช่ลิงก์จาก Google Drive (จะแสดงเฉพาะปุ่มคลิปหนีบกระดาษ)
-        imgWrap.innerHTML = `
-          <a href="${finalFileUrl}" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none; font-size: 13px; font-weight: 600; color: var(--blue);">
-            <i class="fa-solid fa-paperclip" style="color: var(--red); font-size: 15px;"></i> เปิดดูรูปใบเสร็จที่แนบมา
-          </a>
-        `;
-      }
-      
-    } else {
-      // หากคอลัมน์ R ในตารางแถวนั้นว่างเปล่า หรือระบุว่า "ไม่มีรูปแนบ"
-      imgWrap.innerHTML = `<span style="font-size:12px;color:var(--g400);font-style:italic">ไม่มีรูปแนบ</span>`;
-    }
-  }
+  // ── แสดงรูปใบเสร็จ (แก้ใหม่) ──
+  renderReceiptArea(t.fileUrl);
 
-  // ── ส่วนจัดการสิทธิ์ ฟอร์ม และปุ่มบันทึกด้านล่าง (คงเดิม) ──
   document.getElementById("d-status").value    = t.status||"รับเรื่องแล้ว";
   document.getElementById("d-assignee").value  = t.assignee||"-";
   document.getElementById("d-est").value       = t.estimatedDate||"";
