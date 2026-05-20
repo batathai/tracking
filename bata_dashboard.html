@@ -263,13 +263,23 @@ tbody td{padding:11px 14px;vertical-align:middle}
 <!-- DRAWER -->
 <div id="drawer-overlay" onclick="closeDrawer(event)">
   <div class="drawer">
+
+    <!-- HEADER -->
     <div class="drawer-head">
-      <div><div class="drawer-eyebrow">Ticket Number</div><div class="drawer-id" id="d-id">—</div></div>
+      <div>
+        <div class="drawer-eyebrow">Ticket Number</div>
+        <div class="drawer-id" id="d-id">—</div>
+      </div>
       <button class="drawer-close" onclick="closeDrawer()">✕</button>
     </div>
+
+    <!-- BODY -->
     <div class="drawer-body">
+
+      <!-- CUSTOMER INFO -->
       <div class="d-section">
         <div class="d-section-title">ข้อมูลลูกค้า</div>
+
         <div class="d-row"><span class="d-lbl">ชื่อ</span><span class="d-val" id="d-name">—</span></div>
         <div class="d-row"><span class="d-lbl">อีเมล</span><span class="d-val" id="d-email">—</span></div>
         <div class="d-row"><span class="d-lbl">เบอร์โทร</span><span class="d-val" id="d-phone">—</span></div>
@@ -277,21 +287,30 @@ tbody td{padding:11px 14px;vertical-align:middle}
         <div class="d-row"><span class="d-lbl">วันที่ซื้อ</span><span class="d-val" id="d-purchase">—</span></div>
         <div class="d-row"><span class="d-lbl">ใบเสร็จ</span><span class="d-val" id="d-receipt">—</span></div>
         <div class="d-row"><span class="d-lbl">ประเภท</span><span class="d-val" id="d-issue">—</span></div>
-        <div class="d-row"><span class="d-lbl">รายละเอียด</span><span class="d-val" id="d-detail" style="font-size:12px;color:var(--g600)">—</span></div>
 
-        <!-- ── รูปใบเสร็จ (แก้ใหม่ทั้งหมด) ── -->
+        <div class="d-row">
+          <span class="d-lbl">รายละเอียด</span>
+          <span class="d-val d-muted" id="d-detail">—</span>
+        </div>
+
+        <!-- RECEIPT IMAGE -->
         <div class="d-row" id="d-receipt-row">
-          <span class="d-lbl" style="padding-top:6px">รูปแนบ</span>
+          <span class="d-lbl">รูปแนบ</span>
           <div class="d-val" id="d-img-area">
             <span class="receipt-none">ไม่มีรูปแนบ</span>
           </div>
         </div>
+
       </div>
 
+      <!-- STATUS UPDATE -->
       <div class="d-section">
+
         <div class="d-section-title">อัปเดตสถานะ</div>
+
         <div class="perm-notice" id="perm-notice"></div>
-        <div class="d-label">สถานะ</div>
+
+        <label class="d-label">สถานะ</label>
         <select class="d-select" id="d-status">
           <option>รับเรื่องแล้ว</option>
           <option>กำลังดำเนินการ</option>
@@ -299,28 +318,45 @@ tbody td{padding:11px 14px;vertical-align:middle}
           <option>แก้ไขเสร็จแล้ว</option>
           <option>ปิดเคส</option>
         </select>
-        <div class="d-label">มอบหมายให้</div>
+
+        <label class="d-label">มอบหมายให้</label>
         <select class="d-select" id="d-assignee">
           <option value="-">— ยังไม่มอบหมาย —</option>
           <option>Bata Team</option>
           <option>Bay e-Tax Team</option>
           <option>ทีม Bata + Bay</option>
         </select>
-        <div class="d-label" id="lbl-approve" style="display:none">รับผิดชอบโดย (Bata)</div>
-        <input class="d-input" id="d-approve" placeholder="ชื่อผู้อนุมัติ" style="display:none" />
-        <div class="d-label">วันที่คาดว่าจะเสร็จ</div>
-        <input class="d-input" type="date" id="d-est" />
-        <div class="d-label">หมายเหตุถึงลูกค้า</div>
-        <textarea class="d-textarea" id="d-remark" placeholder="ข้อความที่ลูกค้าจะเห็นในหน้า Tracking..."></textarea>
-        <div class="d-label">บันทึกภายใน (ไม่แสดงลูกค้า)</div>
-        <textarea class="d-textarea" id="d-internal" placeholder="บันทึกสำหรับทีมงาน..." style="min-height:60px"></textarea>
+
+        <label class="d-label" id="lbl-approve" style="display:none">
+          รับผิดชอบโดย (Bata)
+        </label>
+        <input class="d-input" id="d-approve"
+          placeholder="ชื่อผู้อนุมัติ"
+          style="display:none"/>
+
+        <label class="d-label">วันที่คาดว่าจะเสร็จ</label>
+        <input class="d-input" type="date" id="d-est"/>
+
+        <label class="d-label">หมายเหตุถึงลูกค้า</label>
+        <textarea class="d-textarea" id="d-remark"
+          placeholder="ข้อความที่ลูกค้าจะเห็นในหน้า Tracking..."></textarea>
+
+        <label class="d-label">บันทึกภายใน (ไม่แสดงลูกค้า)</label>
+        <textarea class="d-textarea" id="d-internal"
+          placeholder="บันทึกสำหรับทีมงาน..."></textarea>
+
       </div>
+
     </div>
+
+    <!-- FOOTER -->
     <div class="drawer-footer">
       <button class="btn-cancel-d" onclick="closeDrawer()">ยกเลิก</button>
       <button class="btn-save-d" id="btn-save-d" onclick="saveTicket()">บันทึก</button>
     </div>
+
     <div class="save-result" id="save-result"></div>
+
   </div>
 </div>
 
