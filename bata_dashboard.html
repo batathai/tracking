@@ -658,8 +658,6 @@ function buildOpenUrl(fileId, originalUrl) {
 
 // URL สำหรับโหลดภาพตรงๆ — ลองหลายรูปแบบ
 function buildImageUrl(fileId) {
-  // uc?export=view คือวิธีที่ Google Drive รองรับอย่างเป็นทางการ
-  // สำหรับไฟล์ที่ตั้ง "Anyone with the link"
   return "https://drive.google.com/uc?export=view&id=" + fileId;
 }
 
